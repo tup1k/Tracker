@@ -29,6 +29,12 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     private let trackerSearchField = UISearchBar()
     
     //Трекер или заглушка для пустого экрана
+    private let trackerPlaceholder: UIImageView = {
+        let image = UIImageView()
+        let placeholder = UIImage.trackerPlaceholder
+        image.image = placeholder
+        return image
+    } ()
     
     
     override func viewDidLoad() {
@@ -48,6 +54,14 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         NSLayoutConstraint.activate([
             trackerSearchField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             trackerSearchField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150)
+        ])
+        
+        view.addSubview(trackerPlaceholder)
+        trackerPlaceholder.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            trackerPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            trackerPlaceholder.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 402)
         ])
         
         
@@ -79,9 +93,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     
     @objc func plusButtonPressed() {
         let controller = TrackerCreationViewController()
-              self.present(controller, animated: true, completion: nil)
-        
-        
+        self.present(controller, animated: true, completion: nil)
     }
     
     @objc func done() {

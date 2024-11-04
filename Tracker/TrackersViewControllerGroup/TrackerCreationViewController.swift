@@ -51,7 +51,7 @@ final class TrackerCreationViewController: UIViewController {
         
         NSLayoutConstraint.activate([
            // viewControllerName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 88),
+            viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 78),
             viewControllerName.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
@@ -78,11 +78,13 @@ final class TrackerCreationViewController: UIViewController {
     }
     
     @objc func habitButtonPressed() {
-        
+        let controller = HabitViewController()
+        self.present(controller, animated: true, completion: nil)
     }
     
     @objc func unregularButtonPressed() {
-        
+        let controller = UnregularViewController()
+        self.present(controller, animated: true, completion: nil)
     }
     
 }
