@@ -12,8 +12,8 @@
 		840FDD152CCE410D006A71E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 840FDD142CCE410D006A71E3 /* Assets.xcassets */; };
 		840FDD182CCE410D006A71E3 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 840FDD172CCE410D006A71E3 /* Base */; };
 		840FDD202CCE514E006A71E3 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840FDD1F2CCE514E006A71E3 /* TabBarController.swift */; };
-		840FDD222CCE9DEC006A71E3 /* TrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840FDD212CCE9DEC006A71E3 /* TrackerViewController.swift */; };
-		840FDD242CCE9E08006A71E3 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840FDD232CCE9E08006A71E3 /* StatisticViewController.swift */; };
+		840FDD222CCE9DEC006A71E3 /* CommonTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840FDD212CCE9DEC006A71E3 /* CommonTrackerViewController.swift */; };
+		840FDD242CCE9E08006A71E3 /* CommonStatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840FDD232CCE9E08006A71E3 /* CommonStatisticViewController.swift */; };
 		840FDD9C2CD574A2006A71E3 /* TrackerCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840FDD9B2CD574A2006A71E3 /* TrackerCreationViewController.swift */; };
 		84374D862CD7EBCF0062B10E /* UnregularViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D852CD7EBCF0062B10E /* UnregularViewController.swift */; };
 /* End PBXBuildFile section */
@@ -26,8 +26,8 @@
 		840FDD172CCE410D006A71E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		840FDD192CCE410D006A71E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		840FDD1F2CCE514E006A71E3 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		840FDD212CCE9DEC006A71E3 /* TrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerViewController.swift; sourceTree = "<group>"; };
-		840FDD232CCE9E08006A71E3 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
+		840FDD212CCE9DEC006A71E3 /* CommonTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTrackerViewController.swift; sourceTree = "<group>"; };
+		840FDD232CCE9E08006A71E3 /* CommonStatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStatisticViewController.swift; sourceTree = "<group>"; };
 		840FDD9B2CD574A2006A71E3 /* TrackerCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TrackerCreationViewController.swift; path = Tracker/TrackersViewControllerGroup/TrackerCreationViewController.swift; sourceTree = SOURCE_ROOT; };
 		84374D852CD7EBCF0062B10E /* UnregularViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnregularViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,7 +85,7 @@
 		840FDD992CD5743B006A71E3 /* TrackersViewControllerGroup */ = {
 			isa = PBXGroup;
 			children = (
-				840FDD212CCE9DEC006A71E3 /* TrackerViewController.swift */,
+				840FDD212CCE9DEC006A71E3 /* CommonTrackerViewController.swift */,
 				840FDD9B2CD574A2006A71E3 /* TrackerCreationViewController.swift */,
 				84374D872CD7EBD70062B10E /* Habit */,
 				84374D882CD7EBE30062B10E /* Unregular */,
@@ -96,7 +96,7 @@
 		840FDD9A2CD57451006A71E3 /* StatisticViewControllerGroup */ = {
 			isa = PBXGroup;
 			children = (
-				840FDD232CCE9E08006A71E3 /* StatisticViewController.swift */,
+				840FDD232CCE9E08006A71E3 /* CommonStatisticViewController.swift */,
 			);
 			path = StatisticViewControllerGroup;
 			sourceTree = "<group>";
@@ -186,10 +186,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				840FDD222CCE9DEC006A71E3 /* TrackerViewController.swift in Sources */,
+				840FDD222CCE9DEC006A71E3 /* CommonTrackerViewController.swift in Sources */,
 				840FDD9C2CD574A2006A71E3 /* TrackerCreationViewController.swift in Sources */,
 				840FDD0C2CCE410B006A71E3 /* AppDelegate.swift in Sources */,
-				840FDD242CCE9E08006A71E3 /* StatisticViewController.swift in Sources */,
+				840FDD242CCE9E08006A71E3 /* CommonStatisticViewController.swift in Sources */,
 				84374D862CD7EBCF0062B10E /* UnregularViewController.swift in Sources */,
 				840FDD0E2CCE410B006A71E3 /* SceneDelegate.swift in Sources */,
 				840FDD202CCE514E006A71E3 /* TabBarController.swift in Sources */,

@@ -61,10 +61,14 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         view.addSubview(currentDate)
         currentDate.translatesAutoresizingMaskIntoConstraints = false
         currentDate.accessibilityIdentifier = "currentDatePicker"
+        currentDate.datePickerMode = .date
+        currentDate.preferredDatePickerStyle = .compact
+//        currentDate.preferredDatePickerStyle = mode
+        currentDate.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         
         let screenSize: CGRect = UIScreen.main.bounds
         let navBar = UINavigationBar(frame: CGRect(x: 0, y: 88, width: screenSize.width, height: 42))
-        let navItem = UINavigationItem(title: "Тест")
+        let navItem = UINavigationItem()
         let plusItem = UIBarButtonItem(customView: plusTrackerButton)
         navItem.leftBarButtonItem = plusItem
         let datePickerItem = UIBarButtonItem(customView: currentDate)
@@ -80,8 +84,16 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         
     }
     
-    @objc func done() { // remove @objc for Swift 3
+    @objc func done() {
         
+    }
+    
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+        let selectedDate = sender.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
+        let formattedDate = dateFormatter.string(from: selectedDate)
+        print("Выбранная дата: \(formattedDate)")
     }
     
     
