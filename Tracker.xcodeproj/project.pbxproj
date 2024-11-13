@@ -21,6 +21,11 @@
 		84374D902CDC0A460062B10E /* ColorsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D8F2CDC0A460062B10E /* ColorsCollectionViewCell.swift */; };
 		84374D922CDC0D990062B10E /* DataFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D912CDC0D990062B10E /* DataFile.swift */; };
 		84374D942CDFC9850062B10E /* HabitCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D932CDFC9850062B10E /* HabitCategoryViewController.swift */; };
+		84374D972CE0C8C30062B10E /* HabitScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D962CE0C8C30062B10E /* HabitScheduleViewController.swift */; };
+		84374D9A2CE0F0FF0062B10E /* TrackerCellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D992CE0F0FF0062B10E /* TrackerCellViewController.swift */; };
+		84374D9D2CE0FA3F0062B10E /* TrackerCellSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D9C2CE0FA3F0062B10E /* TrackerCellSupplementaryView.swift */; };
+		84374D9F2CE27F230062B10E /* TrackerStructuresFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374D9E2CE27F230062B10E /* TrackerStructuresFile.swift */; };
+		84374DA12CE29F470062B10E /* TrackerCellSupplemantaryCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84374DA02CE29F470062B10E /* TrackerCellSupplemantaryCollection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +45,11 @@
 		84374D8F2CDC0A460062B10E /* ColorsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsCollectionViewCell.swift; sourceTree = "<group>"; };
 		84374D912CDC0D990062B10E /* DataFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DataFile.swift; path = Tracker/DataFile.swift; sourceTree = SOURCE_ROOT; };
 		84374D932CDFC9850062B10E /* HabitCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCategoryViewController.swift; sourceTree = "<group>"; };
+		84374D962CE0C8C30062B10E /* HabitScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitScheduleViewController.swift; sourceTree = "<group>"; };
+		84374D992CE0F0FF0062B10E /* TrackerCellViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellViewController.swift; sourceTree = "<group>"; };
+		84374D9C2CE0FA3F0062B10E /* TrackerCellSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellSupplementaryView.swift; sourceTree = "<group>"; };
+		84374D9E2CE27F230062B10E /* TrackerStructuresFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStructuresFile.swift; sourceTree = "<group>"; };
+		84374DA02CE29F470062B10E /* TrackerCellSupplemantaryCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellSupplemantaryCollection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +84,7 @@
 			children = (
 				840FDD0B2CCE410B006A71E3 /* AppDelegate.swift */,
 				84374D912CDC0D990062B10E /* DataFile.swift */,
+				84374D9E2CE27F230062B10E /* TrackerStructuresFile.swift */,
 				840FDD982CD57420006A71E3 /* TabBarGroup */,
 				840FDD0D2CCE410B006A71E3 /* SceneDelegate.swift */,
 				840FDD992CD5743B006A71E3 /* TrackersViewControllerGroup */,
@@ -97,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				840FDD212CCE9DEC006A71E3 /* CommonTrackerViewController.swift */,
+				84374D9B2CE0F2BB0062B10E /* TrackerCell */,
 				840FDD9B2CD574A2006A71E3 /* TrackerCreationViewController.swift */,
 				84374D872CD7EBD70062B10E /* Habit */,
 				84374D882CD7EBE30062B10E /* Unregular */,
@@ -119,6 +131,7 @@
 				84374D8D2CDC0A310062B10E /* EmojiCollectionViewCell.swift */,
 				84374D8F2CDC0A460062B10E /* ColorsCollectionViewCell.swift */,
 				84374D952CDFC98F0062B10E /* Category */,
+				84374D982CE0C8CC0062B10E /* Schedule_ */,
 			);
 			path = Habit;
 			sourceTree = "<group>";
@@ -137,6 +150,24 @@
 				84374D932CDFC9850062B10E /* HabitCategoryViewController.swift */,
 			);
 			path = Category;
+			sourceTree = "<group>";
+		};
+		84374D982CE0C8CC0062B10E /* Schedule_ */ = {
+			isa = PBXGroup;
+			children = (
+				84374D962CE0C8C30062B10E /* HabitScheduleViewController.swift */,
+			);
+			path = Schedule_;
+			sourceTree = "<group>";
+		};
+		84374D9B2CE0F2BB0062B10E /* TrackerCell */ = {
+			isa = PBXGroup;
+			children = (
+				84374D992CE0F0FF0062B10E /* TrackerCellViewController.swift */,
+				84374D9C2CE0FA3F0062B10E /* TrackerCellSupplementaryView.swift */,
+				84374DA02CE29F470062B10E /* TrackerCellSupplemantaryCollection.swift */,
+			);
+			path = TrackerCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,13 +245,18 @@
 				840FDD0C2CCE410B006A71E3 /* AppDelegate.swift in Sources */,
 				84374D942CDFC9850062B10E /* HabitCategoryViewController.swift in Sources */,
 				84374D8A2CD961950062B10E /* HabitViewController.swift in Sources */,
+				84374D9A2CE0F0FF0062B10E /* TrackerCellViewController.swift in Sources */,
+				84374D9F2CE27F230062B10E /* TrackerStructuresFile.swift in Sources */,
 				840FDD242CCE9E08006A71E3 /* CommonStatisticViewController.swift in Sources */,
+				84374D9D2CE0FA3F0062B10E /* TrackerCellSupplementaryView.swift in Sources */,
 				84374D862CD7EBCF0062B10E /* UnregularViewController.swift in Sources */,
+				84374DA12CE29F470062B10E /* TrackerCellSupplemantaryCollection.swift in Sources */,
 				84374D902CDC0A460062B10E /* ColorsCollectionViewCell.swift in Sources */,
 				840FDD0E2CCE410B006A71E3 /* SceneDelegate.swift in Sources */,
 				84374D922CDC0D990062B10E /* DataFile.swift in Sources */,
 				84374D8E2CDC0A310062B10E /* EmojiCollectionViewCell.swift in Sources */,
 				840FDD202CCE514E006A71E3 /* TabBarController.swift in Sources */,
+				84374D972CE0C8C30062B10E /* HabitScheduleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

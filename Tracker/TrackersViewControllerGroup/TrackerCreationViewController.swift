@@ -50,8 +50,7 @@ final class TrackerCreationViewController: UIViewController {
         viewControllerName.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-           // viewControllerName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 78),
+            viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
             viewControllerName.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
@@ -66,15 +65,13 @@ final class TrackerCreationViewController: UIViewController {
         NSLayoutConstraint.activate([
             habitButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             unregularButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            habitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:395),
-            unregularButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:471),
+            habitButton.topAnchor.constraint(equalTo: viewControllerName.bottomAnchor, constant:281),
+            unregularButton.topAnchor.constraint(equalTo: habitButton.bottomAnchor, constant:16),
             habitButton.widthAnchor.constraint(equalToConstant: 335),
             unregularButton.widthAnchor.constraint(equalToConstant: 335),
             habitButton.heightAnchor.constraint(equalToConstant: 60),
             unregularButton.heightAnchor.constraint(equalToConstant: 60)
         ])
-        
-        
     }
     
     @objc func habitButtonPressed() {
