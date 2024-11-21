@@ -9,11 +9,11 @@ import UIKit
 
 ///  Структура трекера
 struct Tracker {
-    let id: UInt
+    let id: UUID
     let trackerName: String
-    let trackerColor: UIColor?
-    let trackerEmoji: String?
-    let trackerShedule: [Days]?
+    let trackerColor: UIColor
+    let trackerEmoji: String
+    let trackerShedule: [Days]
 }
 
 /// Структура категорий трекеров
@@ -24,7 +24,7 @@ struct TrackerCategory {
 
 /// Структура выполненных трекеров
 struct TrackerRecord {
-    let id: UInt
+    let id: UUID
     let trackerDate: Date
 }
 

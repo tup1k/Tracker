@@ -1,14 +1,13 @@
 //
-//  TrackerCellSupplementaryView.swift
+//  UnregularCellSupplementaryView.swift
 //  Tracker
 //
-//  Created by Олег Кор on 10.11.2024.
+//  Created by Олег Кор on 22.11.2024.
 //
 
 import UIKit
 
-final class TrackerCellSupplementaryView: UICollectionReusableView {
-    
+final class UnregularCellSupplementaryView: UICollectionReusableView {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 19, weight: .bold)
@@ -25,7 +24,7 @@ final class TrackerCellSupplementaryView: UICollectionReusableView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
