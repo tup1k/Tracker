@@ -3,7 +3,6 @@ import UIKit
 
 
 final class TrackerViewController: UIViewController, UITextFieldDelegate, UISearchBarDelegate {
-    
     var trackers: [Tracker] = []
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
@@ -30,7 +29,12 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     private lazy var trackerSearchField: UISearchController = {
         let search = UISearchController()
         search.searchBar.placeholder = "Поиск"
-        
+        search.searchBar.tintColor = .ypBlack
+        search.searchResultsUpdater = self
+        search.delegate = self
+        search.searchBar.delegate = self
+        search.obscuresBackgroundDuringPresentation = false
+        definesPresentationContext = true
         return search
     }()
     
@@ -100,7 +104,6 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         let category_1 = TrackerCategory(categoryName: "Важное", categoryTrackers: [mokTracker_1, mokTracker_2, mokTracker_3])
 
         categories.append(category_1)
-        
         categoryName.append(category_1.categoryName)
     }
     
@@ -156,7 +159,6 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
                     print("Дата трекера: \(weekDay.hashValue)")
                     print("Дата пикера: \(selectedWeekDay)")
                     return weekDay.hashValue == selectedWeekDay
-                    
                 }
                 return dateCondition
             }
@@ -228,7 +230,6 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         print("Выбранная дата: \(formattedDate)")
         currentTrackersView()
     }
-    
 }
 
 /// Параметры ячейки и хедера
@@ -315,6 +316,26 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     func completedTrackersCount(trackerID: UUID) -> Int {
         return completedTrackers.filter { $0.id == trackerID }.count
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else {
+            return nil
+        }
+        
+        let indexPath = indexPaths[0]
+        return UIContextMenuConfiguration(actionProvider: { actions in    // 4
+            return UIMenu(children: [                                     // 5
+                UIAction(title: "Редактировать") {  _ in                // 6
+                    let alert = UIAlertController(title: "Внимание!",
+                                                  message: "Данная функция доступна \nв платной версии",
+                                                  preferredStyle: .alert)
+                    let action = UIAlertAction(title: "OK", style: .default)
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                },
+                                    ])
+        })
+    }
 }
 
 extension TrackerViewController: TrackerCellDelegate {
@@ -372,6 +393,14 @@ extension TrackerViewController: TrackerCreationViewControllerDelegate {
     
     func didSelectUnregularType(type: String) {
         
+    }
+    
+    
+}
+
+extension TrackerViewController: UISearchControllerDelegate, UISearchResultsUpdating  {
+    func updateSearchResults(for searchController: UISearchController) {
+        print("Метод для поиска")
     }
     
     

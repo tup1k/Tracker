@@ -87,7 +87,7 @@ final class UnregularViewController: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .ypLightGray
-        tableView.separatorStyle = .singleLine
+        tableView.separatorStyle = .none
         tableView.separatorColor = .ypBlack
         tableView.separatorInset.left = 16
         tableView.separatorInset.right = 16

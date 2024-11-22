@@ -27,7 +27,6 @@ final class HabitScheduleViewController: UIViewController {
     /// Таблица с днями недели для трекера
     private lazy var scheduleTableView: UITableView = {
         let tableView = UITableView(frame: view.bounds, style: .insetGrouped)
-//        tableView.isScrollEnabled = false
         tableView.isScrollEnabled = true
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
