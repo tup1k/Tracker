@@ -9,18 +9,11 @@
 
 import UIKit
 
-//protocol AddNewTrackerViewControllerDelegate: AnyObject {
-//    func addTracker(tracker: Tracker)
-//    func addEmoji(emoji: String)
-//    func addColor(color: UIColor)
-//}
 
 final class UnregularViewController: UIViewController {
     let trackerColors = Colors()
     let trackerEmoji = Emoji()
     let categoryVC = TrackerViewController()
-    
-//    weak var delegate: AddNewTrackerViewControllerDelegate?
     
     private var selectedEmoji: String?
     private var selectedEmojiIndex: IndexPath?
@@ -228,16 +221,12 @@ final class UnregularViewController: UIViewController {
     }
     
     @objc func unregularTrackerCreateButtonPressed() {
-        guard let name = unregularName.text else { return }
-        guard !name.isEmpty else { return }
-        guard let color = selectedColor else { return }
-        guard let emoji = selectedEmoji else { return }
-        
-//        let newTracker = Tracker(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule)
-//        delegate?.addTracker(tracker: newTracker)
-//        print("СОЗДАН ТРЕКЕР С НОМЕРОМ \(newTracker.id), ИМЕНЕМ \(name), ЦВЕТОМ \(color), ЭМОДЗИ \(emoji), ДНЯМИ НЕДЕЛИ \(newTracker.trackerShedule)")
-        
-        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        let alert = UIAlertController(title: "Внимание!",
+                                      message: "Данная функция доступна \nв платной версии",
+                                      preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
     }
     
     @objc func newTrackerName(_ sender: UITextField) {
@@ -263,7 +252,6 @@ final class UnregularViewController: UIViewController {
         }
     }
 }
-
 
 extension UnregularViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -296,10 +284,9 @@ extension UnregularViewController: UITableViewDataSource, UITableViewDelegate {
         
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-//            let controller = UnregularCategoryViewController()
-////            controller.delegate = self
-//            self.present(controller, animated: true, completion: nil)
+            let controller = UnregularCategoryViewController()
+            controller.delegate = self
+            self.present(controller, animated: true, completion: nil)
     }
 }
 
@@ -427,14 +414,12 @@ extension UnregularViewController: UICollectionViewDelegateFlowLayout {
     
 }
 
-extension UnregularViewController: CategoryViewControllerDelegate {
-    func newCategory(category: String) {
+extension UnregularViewController: UnregularCategoryViewControllerDelegate {
+    func newUnregularCategory(category: String) {
         self.selectedCategory = category
         blockButtons()
         unregularPropertiesTableView.reloadData()
     }
-    
-    
 }
     
 

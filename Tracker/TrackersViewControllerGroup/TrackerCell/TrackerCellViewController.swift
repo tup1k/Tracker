@@ -27,7 +27,7 @@ final class TrackerCellViewController: UICollectionViewCell {
     let titleLable: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .white
+        label.textColor = .ypWhite
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
         return label
@@ -66,7 +66,7 @@ final class TrackerCellViewController: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .ypWhite
         titleLable.preferredMaxLayoutWidth = cellView.bounds.width
         
         cellContraint()
@@ -91,6 +91,7 @@ final class TrackerCellViewController: UICollectionViewCell {
             cellView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             cellView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             cellView.heightAnchor.constraint(equalToConstant: 90),
+            cellView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             
             titleLable.bottomAnchor.constraint(equalTo: cellView.bottomAnchor, constant: -12),
             titleLable.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 12),

@@ -27,18 +27,18 @@ final class HabitScheduleViewController: UIViewController {
     /// Таблица с днями недели для трекера
     private lazy var scheduleTableView: UITableView = {
         let tableView = UITableView(frame: view.bounds, style: .insetGrouped)
-        tableView.isScrollEnabled = true
+        tableView.isScrollEnabled = false
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.separatorStyle = .singleLine
-        tableView.separatorColor = .lightGray
-        tableView.separatorInset = .zero
+        tableView.separatorColor = .ypLightGray
         tableView.separatorInset.left = 16
         tableView.separatorInset.right = 16
-        tableView.contentInset.top = -19
+        tableView.contentInset.top = -35
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "scheduleCell")
         tableView.allowsSelection = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
         return tableView
     }()
 
@@ -48,7 +48,7 @@ final class HabitScheduleViewController: UIViewController {
         button.setTitle("Готово", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "createScheduleButton"
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
@@ -88,8 +88,8 @@ final class HabitScheduleViewController: UIViewController {
             
             scheduleTableView.topAnchor.constraint(equalTo: scheduleTitle.bottomAnchor, constant: 30),
             scheduleTableView.bottomAnchor.constraint(equalTo: createScheduleButton.topAnchor, constant: -47),
-            scheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            scheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            scheduleTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scheduleTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
     }
     
@@ -103,7 +103,7 @@ final class HabitScheduleViewController: UIViewController {
     private func blockButton() {
         if selectedDays.isEmpty {
             createScheduleButton.isEnabled = false
-            createScheduleButton.backgroundColor = .ypLightGray
+            createScheduleButton.backgroundColor = .ypGray
         } else {
             createScheduleButton.isEnabled = true
             createScheduleButton.backgroundColor = .ypBlack
@@ -120,7 +120,7 @@ extension HabitScheduleViewController: UITableViewDataSource, UITableViewDelegat
         let cell = tableView.dequeueReusableCell(withIdentifier: "scheduleCell", for: indexPath)
         let weekDay = Days.allCases[indexPath.row]
         cell.textLabel?.text = weekDay.rawValue
-        cell.backgroundColor = .clear
+        cell.backgroundColor = .ypLightGray
         cell.selectionStyle = .none
         
         let dayToggle = UISwitch()
@@ -133,7 +133,7 @@ extension HabitScheduleViewController: UITableViewDataSource, UITableViewDelegat
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
+        return tableView.bounds.height / 7
     }
     
     @objc func selectedDay(_ sender: UISwitch) {

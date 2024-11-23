@@ -24,26 +24,3 @@ final class TrackerCellSupplemantaryCollection: NSObject, UICollectionViewDataSo
         return cell
     }
 }
-    
-//    // Размеры для коллекции:
-//let size = CGRect(origin: CGPoint(x: 0, y: 0),
-//                  size: CGSize(width: 400, height: 600))
-//// Указываем, какой Layout хотим использовать:
-//let layout = UICollectionViewFlowLayout()
-//
-//let helper = TrackerCellSupplemantaryCollection(count: 31)
-//let collection = UICollectionView(frame: size, collectionViewLayout: layout)
-//    // Регистрируем ячейку в коллекции.
-//    // Регистрируя ячейку, мы сообщаем коллекции, какими типами ячеек она может распоряжаться.
-//    // При попытке создать ячейку с незарегистрированным идентификатором коллекция выдаст ошибку.
-//    collection.register(ColorCell.self, forCellWithReuseIdentifier: ColorCell.identifier)
-//    collection.backgroundColor = .lightGray
-//    collection.dataSource = helper
-//
-//    PlaygroundPage.current.liveView = collection
-//
-//    collection.reloadData()
-// 
-//    
-//    
-//}

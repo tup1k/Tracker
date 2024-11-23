@@ -8,9 +8,7 @@
 import UIKit
 
 protocol AddNewTrackerViewControllerDelegate: AnyObject {
-    func addTracker(tracker: Tracker)
-    func addEmoji(emoji: String)
-    func addColor(color: UIColor)
+    func addTracker(tracker: Tracker, selectedCategory: String)
 }
 
 final class HabitViewController: UIViewController {
@@ -74,7 +72,7 @@ final class HabitViewController: UIViewController {
         let limit = UILabel()
         limit.text = "Ограничение 38 символов"
         limit.font = .systemFont(ofSize: 17, weight: .regular)
-        limit.textColor = .red
+        limit.textColor = .ypRed
         limit.translatesAutoresizingMaskIntoConstraints = false
         limit.isHidden = true
         return limit
@@ -116,10 +114,10 @@ final class HabitViewController: UIViewController {
         button.setTitle("Отменить", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.red, for: .normal)
-        button.backgroundColor = .white
-        button.tintColor = .red
+        button.backgroundColor = .ypWhite
+        button.tintColor = .ypRed
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.red.cgColor
+        button.layer.borderColor = UIColor.ypRed.cgColor
         button.accessibilityIdentifier = "habbitTrackerDismiss"
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
@@ -134,7 +132,7 @@ final class HabitViewController: UIViewController {
         button.setTitle("Создать", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .gray
+        button.backgroundColor = .ypGray
         button.accessibilityIdentifier = "habbitTrackerCreate"
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
@@ -148,7 +146,7 @@ final class HabitViewController: UIViewController {
         super.viewDidLoad()
         
         view.accessibilityIdentifier = "HabitVC"
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         createView()
       }
@@ -232,9 +230,10 @@ final class HabitViewController: UIViewController {
         guard !name.isEmpty else { return }
         guard let color = selectedColor else { return }
         guard let emoji = selectedEmoji else { return }
+        guard let category = selectedCategory else { return }
         
         let newTracker = Tracker(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule)
-        delegate?.addTracker(tracker: newTracker)
+        delegate?.addTracker(tracker: newTracker, selectedCategory: category )
         print("СОЗДАН ТРЕКЕР С НОМЕРОМ \(newTracker.id), ИМЕНЕМ \(name), ЦВЕТОМ \(color), ЭМОДЗИ \(emoji), ДНЯМИ НЕДЕЛИ \(newTracker.trackerShedule)")
         
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
@@ -252,10 +251,10 @@ final class HabitViewController: UIViewController {
             selectedSchedule != "" && selectedEmoji != "" &&
             selectedColor != nil && trackerName.count < 38 {
             habbitTrackerCreate.isEnabled = true
-            habbitTrackerCreate.backgroundColor = .black
+            habbitTrackerCreate.backgroundColor = .ypBlack
         } else {
             habbitTrackerCreate.isEnabled = false
-            habbitTrackerCreate.backgroundColor = .gray
+            habbitTrackerCreate.backgroundColor = .ypGray
         }
         if trackerName.count > 38 {
             maxTrackerLength.isHidden = false
@@ -264,7 +263,6 @@ final class HabitViewController: UIViewController {
         }
     }
 }
-
 
 extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -284,12 +282,12 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
             let trackerCategory = selectedCategory ?? ""
             cell.textLabel?.text = "Категория"
             cell.detailTextLabel?.text = trackerCategory
-            cell.detailTextLabel?.textColor = .gray
+            cell.detailTextLabel?.textColor = .ypGray
         } else if indexPath.row == 1 {
             let trackerSchedule = selectedSchedule ?? ""
             cell.textLabel?.text = "Расписание"
             cell.detailTextLabel?.text = trackerSchedule
-            cell.detailTextLabel?.textColor = .gray
+            cell.detailTextLabel?.textColor = .ypGray
             
             if indexPath.row == 1 {
                 cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
@@ -299,7 +297,6 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
                 cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
             }
         }
-        
         return cell
     }
     
@@ -362,7 +359,7 @@ extension HabitViewController: UICollectionViewDataSource {
             
             
             if selectedEmojiIndex == indexPath {
-                habbitCell.contentView.backgroundColor = .lightGray
+                habbitCell.contentView.backgroundColor = .ypEmojiGray
                 habbitCell.contentView.layer.cornerRadius = 16
             } else {
                 habbitCell.contentView.backgroundColor = .clear
@@ -426,7 +423,7 @@ extension HabitViewController: UICollectionViewDataSource {
 /// Параметры расположения ячеек
 extension HabitViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize { // 1
-        return CGSize(width: 52, height: 52)   // 2
+        return CGSize(width: 52, height: 52)
     }
     
     func collectionView(_: UICollectionView, layout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt: Int) -> CGFloat {
@@ -442,7 +439,7 @@ extension HabitViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 18)           // 5
+        return CGSize(width: collectionView.frame.width, height: 18)
     }
     
 }
@@ -468,7 +465,5 @@ extension HabitViewController: CategoryViewControllerDelegate {
         blockButtons()
         habbitPropertiesTableView.reloadData()
     }
-    
-    
 }
     

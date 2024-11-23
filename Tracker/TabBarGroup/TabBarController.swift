@@ -26,6 +26,11 @@ final class TabBarController: UITabBarController {
                                                         selectedImage: nil)
         
         self.viewControllers = [trackerViewController, statisticViewController]
+        
+        let lineLayer = CALayer()
+        lineLayer.backgroundColor = UIColor.ypGray.cgColor
+        lineLayer.frame = CGRect(x: 0, y: 0, width: self.tabBar.bounds.width, height: 1)
+        self.tabBar.layer.addSublayer(lineLayer)
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {

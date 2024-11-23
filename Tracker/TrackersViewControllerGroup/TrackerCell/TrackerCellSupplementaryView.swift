@@ -28,6 +28,7 @@ final class TrackerCellSupplementaryView: UICollectionReusableView {
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16)
         ])
     }
     

@@ -2,18 +2,18 @@
 //  HabitCategoryViewController.swift
 //  Tracker
 //
-//  Created by Олег Кор on 09.11.2024.
+//  Created by Олег Кор on 23.11.2024.
 //
 
 import UIKit
 
-protocol CategoryViewControllerDelegate: AnyObject {
-    func newCategory(category: String)
+protocol UnregularCategoryViewControllerDelegate: AnyObject {
+    func newUnregularCategory(category: String)
 }
 
 
-final class HabitCategoryViewController: UIViewController {
-    weak var delegate: CategoryViewControllerDelegate?
+final class UnregularCategoryViewController: UIViewController {
+    weak var delegate: UnregularCategoryViewControllerDelegate?
     private var selectedCategory: String?
     private var actualCategories: [String] = []
     private let categoryVC = TrackerViewController()
@@ -36,7 +36,7 @@ final class HabitCategoryViewController: UIViewController {
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .ypLightGray
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UnregularCategoryCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -70,13 +70,13 @@ final class HabitCategoryViewController: UIViewController {
         button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "createCategoruButton"
         button.layer.cornerRadius = 16
-        button.addTarget(self, action: #selector(categoryButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(unregularCategoryButtonPressed), for: .touchUpInside)
         return button
     }()
     
         override func viewDidLoad() {
             super.viewDidLoad()
-            view.accessibilityIdentifier = "HabitCategoryVC"
+            view.accessibilityIdentifier = "UnregularCategoryVC"
             view.backgroundColor = .ypWhite
             
             categoryVC.mokTrackers()
@@ -137,22 +137,22 @@ final class HabitCategoryViewController: UIViewController {
     }
         
     /// В данный момент эта кнопка сохраняет выбор категории
-    @objc func categoryButtonPressed() {
+    @objc func unregularCategoryButtonPressed() {
         if let category = selectedCategory {
-            delegate?.newCategory(category: category)
+            delegate?.newUnregularCategory(category: category)
             print("ПОЛЬЗОВАТЕЛЬ ВЫБРАЛ КАТЕГОРИЮ: \(selectedCategory)")
         }
         dismiss(animated: true, completion: nil)
     }
 }
 
-extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegate {
+extension UnregularCategoryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         actualCategories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "UnregularCategoryCell", for: indexPath)
         let category = actualCategories[indexPath.row]
         cell.textLabel?.text = category
         cell.textLabel?.textColor = .ypBlack
@@ -183,4 +183,5 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
         tableView.reloadData()
     }
 }
+
 

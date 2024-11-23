@@ -30,7 +30,7 @@ final class TrackerCreationViewController: UIViewController {
         button.setTitle("Привычка", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "habitButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(habitButtonPressed), for: .touchUpInside)
@@ -44,7 +44,7 @@ final class TrackerCreationViewController: UIViewController {
         button.setTitle("Нерегулярное событие", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "unregularButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(unregularButtonPressed), for: .touchUpInside)

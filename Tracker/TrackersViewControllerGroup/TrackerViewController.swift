@@ -52,7 +52,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         let label = UILabel()
         label.text = "Что будем отслеживать?"
         label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .black
+        label.textColor = .ypBlack
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -64,7 +64,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 9
-        layout.sectionInset = .init(top: 10, left: 16, bottom: 10, right: 16)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(TrackerCellViewController.self, forCellWithReuseIdentifier: "trackerCell")
         collectionView.register(TrackerCellSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
@@ -72,7 +72,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         return collectionView
     }()
     
-    var selectedDate: Date? {
+    var currentDate: Date? {
         let selectedDate = pickerDate.date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
@@ -94,9 +94,9 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     
     // Моковские трекеры для отладки
     func mokTrackers() {
-        let mokTracker_1 = Tracker(id: UUID(), trackerName: "MOK Tracker_1", trackerColor: .red, trackerEmoji: "😻", trackerShedule: [.wednesday])
+        let mokTracker_1 = Tracker(id: UUID(), trackerName: "MOK Tracker_1", trackerColor: .red, trackerEmoji: "😻", trackerShedule: [.wednesday, .sutarday])
         let mokTracker_2 = Tracker(id: UUID(), trackerName: "MOK Tracker_2", trackerColor: .green, trackerEmoji: "😻", trackerShedule: [.friday])
-        let mokTracker_3 = Tracker(id: UUID(), trackerName: "MOK Tracker_3_long edition for testing", trackerColor: .orange, trackerEmoji: "😻", trackerShedule: [.monday])
+        let mokTracker_3 = Tracker(id: UUID(), trackerName: "MOK Tracker_3_long edition for testing", trackerColor: .orange, trackerEmoji: "😻", trackerShedule: [.monday, .sutarday])
         trackers.append(mokTracker_1)
         trackers.append(mokTracker_2)
         trackers.append(mokTracker_3)
@@ -110,7 +110,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     /// Настройки навибара
     private func setNavigationBar() {
         let naviBarLeftButton = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .done, target: self, action: #selector(plusButtonPressed))
-        naviBarLeftButton.tintColor = .black
+        naviBarLeftButton.tintColor = .ypBlack
         self.navigationItem.leftBarButtonItem = naviBarLeftButton
         
         let naviBarRightButton = UIBarButtonItem(customView: pickerDate)
@@ -120,12 +120,13 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         navigationController?.navigationBar.prefersLargeTitles = true
         
         self.navigationItem.searchController = trackerSearchField
+    
     }
     
     /// Привязка элементов к экрану
     private func commonTrackerVCConstraint() {
         view.accessibilityIdentifier = "TrackerViewController"
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         view.addSubview(trackerPlaceholderImage)
         view.addSubview(trackerPlaceholderLabel)
@@ -148,47 +149,22 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         ])
     }
     
-    private func showTodayTrackers() {
-        let calendar = Calendar.current
-        let selectedWeekDay = calendar.component(.weekday, from: pickerDate.date)
-        visibleTrackersWithCategory = []
-        
-        visibleTrackersWithCategory = categories.compactMap { category in
-            let trackers = category.categoryTrackers.filter { tracker in
-                let dateCondition = tracker.trackerShedule.contains { weekDay in
-                    print("Дата трекера: \(weekDay.hashValue)")
-                    print("Дата пикера: \(selectedWeekDay)")
-                    return weekDay.hashValue == selectedWeekDay
-                }
-                return dateCondition
-            }
-            
-            if trackers.isEmpty {
-                return nil
-            }
-            
-            return TrackerCategory(categoryName: category.categoryName, categoryTrackers: trackers)
-        }
-        placeholderVisible()
-        trackerCollectionView.reloadData()
-    }
-    
     private func currentTrackersView() {
-        let selectedDate = pickerDate.date
+        let currentDate = pickerDate.date
         let calendar = Calendar.current
-        var currentDay = calendar.component(.weekday, from: selectedDate)
-        currentDay = (currentDay + 5) % 7
+        var currentWeekDay = calendar.component(.weekday, from: currentDate)
+        currentWeekDay = (currentWeekDay + 5) % 7
         
         visibleTrackers = []
         
         for category in categories {
-            for onetracker in category.categoryTrackers where (onetracker.trackerShedule.contains(Days.allCases[currentDay]))  {
+            for onetracker in category.categoryTrackers where (onetracker.trackerShedule.contains(Days.allCases[currentWeekDay]))  {
                 visibleTrackers.append(onetracker)
             }
         }
         
         for one in visibleTrackers {
-            print("Дата в трекере:\(one.trackerShedule) и \(Days.allCases[currentDay])")
+            print("Дата в трекере:\(one.trackerShedule) и \(Days.allCases[currentWeekDay])")
         }
         
         visibleTrackers = Array(visibleTrackers.reduce(into: [UUID: Tracker]()) { $0[$1.id] = $1 }.values)
@@ -239,26 +215,24 @@ extension TrackerViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-       guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCellViewController else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCellViewController else { return UICollectionViewCell() }
         
         let tracker = visibleTrackers[indexPath.row]
-        print("ИМЯ ТРЕКЕРА В КОЛЕКШЕНЕ: \(tracker.trackerName)")
+        print("ИМЯ ТРЕКЕРА В КОЛЛЕКЦИИ: \(tracker.trackerName)")
         
         let isCompletedToday = completedTrackers.contains {
-            $0.id == tracker.id && Calendar.current.isDate($0.trackerDate, inSameDayAs: selectedDate ?? Date())
+            $0.id == tracker.id && Calendar.current.isDate($0.trackerDate, inSameDayAs: currentDate ?? Date())
         }
         cell.trackerDone = isCompletedToday
         let completeTrackersCount = completedTrackers.filter { $0.id == tracker.id }.count
         cell.configure(with: tracker, completedCount: completeTrackersCount, isCompletedToday: isCompletedToday)
         cell.delegate = self
         
-        
-        if (selectedDate ?? Date()) <= Date() {
+        if (currentDate ?? Date()) <= Date() {
             cell.checkTrackerButton.isEnabled = true
         } else {
             cell.checkTrackerButton.isEnabled = false
         }
-        
         return cell
     }
     
@@ -341,21 +315,19 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 extension TrackerViewController: TrackerCellDelegate {
     func completeTracker(_ trackerCell: TrackerCellViewController, id: UUID, trackerDone: Bool) {
         let calendar = Calendar.current
-        let trackerDate = calendar.startOfDay(for: Date())
-        let selectedTrackerDate = calendar.startOfDay(for: pickerDate.date)
         
         if trackerDone {
             completedTrackersID.insert(id)
             let trackerRecord = TrackerRecord(id: id, trackerDate: pickerDate.date)
             completedTrackers.append(trackerRecord)
             trackerCollectionView.reloadData()
-            if !completedTrackers.contains(where: { $0.id == id && calendar.isDate($0.trackerDate, inSameDayAs: selectedDate ?? Date()) }) {
+            if !completedTrackers.contains(where: { $0.id == id && calendar.isDate($0.trackerDate, inSameDayAs: currentDate ?? Date()) }) {
                 completedTrackers.append(trackerRecord)
             }
             print(completedTrackersID)
         } else {
             completedTrackersID.remove(id)
-            if let index = completedTrackers.firstIndex(where: { $0.id == id && calendar.isDate($0.trackerDate, inSameDayAs: selectedDate ?? Date()) }) {
+            if let index = completedTrackers.firstIndex(where: { $0.id == id && calendar.isDate($0.trackerDate, inSameDayAs: currentDate ?? Date()) }) {
                 completedTrackers.remove(at: index)
                 print(completedTrackersID)
             }
@@ -365,24 +337,16 @@ extension TrackerViewController: TrackerCellDelegate {
 }
 
 extension TrackerViewController: AddNewTrackerViewControllerDelegate {
-    func addTracker(tracker: Tracker) {
+    func addTracker(tracker: Tracker, selectedCategory: String) {
         print("ВЫ ПЕРЕДАЛИ В ОСНОВНОЙ КОНТРОЛЛЕР СЛЕДУЮЩИЙ ТРЕКЕР: \(tracker)")
         trackers.append(tracker)
         
-        let newCategory = TrackerCategory(categoryName: "Важное", categoryTrackers: trackers)
+        let newCategory = TrackerCategory(categoryName: selectedCategory, categoryTrackers: trackers)
         self.categories = [newCategory]
         
         trackerCollectionView.reloadData()
-       currentTrackersView()
+        currentTrackersView()
         placeholderVisible()
-    }
-    
-    func addEmoji(emoji: String) {
-        
-    }
-    
-    func addColor(color: UIColor) {
-       
     }
 }
 
@@ -394,15 +358,11 @@ extension TrackerViewController: TrackerCreationViewControllerDelegate {
     func didSelectUnregularType(type: String) {
         
     }
-    
-    
 }
 
 extension TrackerViewController: UISearchControllerDelegate, UISearchResultsUpdating  {
     func updateSearchResults(for searchController: UISearchController) {
         print("Метод для поиска")
     }
-    
-    
 }
 
