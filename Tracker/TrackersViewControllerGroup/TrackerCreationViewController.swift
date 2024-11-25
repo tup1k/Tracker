@@ -17,7 +17,7 @@ final class TrackerCreationViewController: UIViewController {
     weak var delegate:TrackerCreationViewControllerDelegate?
     
     /// Заголовок окна выбора типа трекера
-    private let viewControllerName: UILabel = {
+    private lazy var viewControllerName: UILabel = {
         let label = UILabel()
         label.text = "Создание трекера"
         label.font = .systemFont(ofSize: 16, weight: .regular)
@@ -25,7 +25,7 @@ final class TrackerCreationViewController: UIViewController {
     }()
     
     /// Кнопка создания привычки
-    private let habitButton: UIButton = {
+    private lazy var habitButton: UIButton = {
         let button = UIButton()
         button.setTitle("Привычка", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
@@ -39,7 +39,7 @@ final class TrackerCreationViewController: UIViewController {
     }()
     
     // Кнопка создания нерегулярного события
-    private let unregularButton: UIButton = {
+    private lazy var unregularButton: UIButton = {
         let button = UIButton()
         button.setTitle("Нерегулярное событие", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
@@ -85,16 +85,16 @@ final class TrackerCreationViewController: UIViewController {
         ])
     }
 
-    @objc func habitButtonPressed() {
+    @objc private func habitButtonPressed() {
         let controller = HabitViewController()
-        controller.delegate = delegate as! any AddNewTrackerViewControllerDelegate
+        controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
         let type = "Привычка"
         delegate?.didSelectHabbitType(type: type)
         
         self.present(controller, animated: true, completion: nil)
     }
     
-    @objc func unregularButtonPressed() {
+    @objc private func unregularButtonPressed() {
         let controller = UnregularViewController()
         
         self.present(controller, animated: true, completion: nil)

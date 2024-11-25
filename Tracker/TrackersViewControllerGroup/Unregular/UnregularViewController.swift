@@ -144,6 +144,11 @@ final class UnregularViewController: UIViewController {
         view.backgroundColor = .white
         
         createView()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(keyboardSwitchOff))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+        unregularName.delegate = self
       }
 
     private func createView() {
@@ -216,11 +221,11 @@ final class UnregularViewController: UIViewController {
         ])
     }
     
-    @objc func unregularTrackerDismissButtonPressed() {
+    @objc private func unregularTrackerDismissButtonPressed() {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
-    @objc func unregularTrackerCreateButtonPressed() {
+    @objc private func unregularTrackerCreateButtonPressed() {
         let alert = UIAlertController(title: "Внимание!",
                                       message: "Данная функция доступна \nв платной версии",
                                       preferredStyle: .alert)
@@ -229,16 +234,21 @@ final class UnregularViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    @objc func newTrackerName(_ sender: UITextField) {
+    @objc private func newTrackerName(_ sender: UITextField) {
         blockButtons()
+    }
+    
+    @objc private func keyboardSwitchOff() {
+        view.endEditing(true)
     }
     
     /// Функция блокировки кнопок создания трекера в случае если поля не заполнены
     private func blockButtons() {
         guard let trackerName = unregularName.text else { return }
         
-        if trackerName.isEmpty == false && selectedCategory != "" &&
-            selectedEmoji != "" && selectedColor != nil && trackerName.count < 38 {
+        if trackerName.isEmpty == false && selectedCategory != nil &&
+            selectedCategory != "" && selectedEmoji != "" &&
+            selectedColor != nil && trackerName.count < 38 {
             unregularTrackerCreate.isEnabled = true
             unregularTrackerCreate.backgroundColor = .black
         } else {
@@ -326,7 +336,6 @@ extension UnregularViewController: UICollectionViewDataSource {
         if indexPath.section == 0 {
             let emoji = trackerEmoji.trackerEmoji[indexPath.item]
             unregularCell.collectionLable.text = emoji
-            
             
             if selectedEmojiIndex == indexPath {
                 unregularCell.contentView.backgroundColor = .lightGray

@@ -125,19 +125,14 @@ final class HabitCategoryViewController: UIViewController {
             createCategoryButton.heightAnchor.constraint(equalToConstant: 60),
         ])
         
-        if actualCategories.count > 0 {
-            categoryPlaceholderImage.isHidden = true
-            categoryPlaceholderLabel.isHidden = true
-            categoriesTableView.isHidden = false
-        } else {
-            categoryPlaceholderImage.isHidden = false
-            categoryPlaceholderLabel.isHidden = false
-            categoriesTableView.isHidden = true
-        }
+        let isActualCategoriesIsEmpty = actualCategories.count > 0
+        categoryPlaceholderImage.isHidden = isActualCategoriesIsEmpty
+        categoryPlaceholderLabel.isHidden = isActualCategoriesIsEmpty
+        categoriesTableView.isHidden = !isActualCategoriesIsEmpty
     }
         
     /// В данный момент эта кнопка сохраняет выбор категории
-    @objc func categoryButtonPressed() {
+    @objc private func categoryButtonPressed() {
         if let category = selectedCategory {
             delegate?.newCategory(category: category)
             print("ПОЛЬЗОВАТЕЛЬ ВЫБРАЛ КАТЕГОРИЮ: \(selectedCategory)")

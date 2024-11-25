@@ -94,7 +94,7 @@ final class HabitScheduleViewController: UIViewController {
     }
     
     /// Создание расписания для привычки
-    @objc func scheduleButtonPressed() {
+    @objc private func scheduleButtonPressed() {
             delegate?.newSchedule(schedule: selectedDays)
             print("ЗАДАНЫ СДЕЛУЮЩИЕ ДНИ НЕДЕЛИ ДЛЯ ТРЕКЕРА: \(selectedDays)")
             dismiss(animated: true, completion: nil)
@@ -136,7 +136,7 @@ extension HabitScheduleViewController: UITableViewDataSource, UITableViewDelegat
         return tableView.bounds.height / 7
     }
     
-    @objc func selectedDay(_ sender: UISwitch) {
+    @objc private func selectedDay(_ sender: UISwitch) {
         let day = Days.allCases[sender.tag]
         
         if sender.isOn {

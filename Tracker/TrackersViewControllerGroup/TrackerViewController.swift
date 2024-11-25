@@ -191,14 +191,14 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     }
     
     /// Функция нажатие кнопки +
-    @objc func plusButtonPressed() {
+    @objc private func plusButtonPressed() {
         let controller = TrackerCreationViewController()
         controller.delegate = self
         self.present(controller, animated: true, completion: nil)
     }
     
     /// Выбор даты в пикере
-    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты

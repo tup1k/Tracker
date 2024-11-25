@@ -149,8 +149,14 @@ final class HabitViewController: UIViewController {
         view.backgroundColor = .ypWhite
         
         createView()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(keyboardSwitchOff))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+        habbitName.delegate = self
       }
 
+    /// Метод создания UI
     private func createView() {
         let habbitButtonsStack = UIStackView(arrangedSubviews: [habbitTrackerDismiss, habbitTrackerCreate])
         habbitButtonsStack.axis = .horizontal
@@ -221,11 +227,11 @@ final class HabitViewController: UIViewController {
         ])
     }
     
-    @objc func habitTrackerDismissButtonPressed() {
+    @objc private func habitTrackerDismissButtonPressed() {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
-    @objc func habitTrackerCreateButtonPressed() {
+    @objc private func habitTrackerCreateButtonPressed() {
         guard let name = habbitName.text else { return }
         guard !name.isEmpty else { return }
         guard let color = selectedColor else { return }
@@ -239,7 +245,7 @@ final class HabitViewController: UIViewController {
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
-    @objc func newTrackerName(_ sender: UITextField) {
+    @objc private func newTrackerName(_ sender: UITextField) {
         blockButtons()
     }
     
@@ -247,7 +253,8 @@ final class HabitViewController: UIViewController {
     private func blockButtons() {
         guard let trackerName = habbitName.text else { return }
         
-        if trackerName.isEmpty == false && selectedCategory != "" &&
+        if trackerName.isEmpty == false && selectedCategory != nil &&
+            selectedCategory != "" && selectedSchedule != nil && 
             selectedSchedule != "" && selectedEmoji != "" &&
             selectedColor != nil && trackerName.count < 38 {
             habbitTrackerCreate.isEnabled = true
@@ -262,7 +269,12 @@ final class HabitViewController: UIViewController {
             maxTrackerLength.isHidden = true
         }
     }
+    
+    @objc private func keyboardSwitchOff() {
+        view.endEditing(true)
+    }
 }
+
 
 extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
