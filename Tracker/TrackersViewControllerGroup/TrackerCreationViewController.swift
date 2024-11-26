@@ -7,82 +7,97 @@
 
 import UIKit
 
+protocol TrackerCreationViewControllerDelegate: AnyObject {
+    func didSelectHabbitType(type: String)
+    func didSelectUnregularType(type: String)
+}
+
 final class TrackerCreationViewController: UIViewController {
     
-    // Заголовок
-    private let viewControllerName: UILabel = {
+    weak var delegate:TrackerCreationViewControllerDelegate?
+    
+    /// Заголовок окна выбора типа трекера
+    private lazy var viewControllerName: UILabel = {
         let label = UILabel()
         label.text = "Создание трекера"
         label.font = .systemFont(ofSize: 16, weight: .regular)
         return label
     }()
     
-    // Кнопка создания привычки
-    private let habitButton: UIButton = {
+    /// Кнопка создания привычки
+    private lazy var habitButton: UIButton = {
         let button = UIButton()
         button.setTitle("Привычка", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "habitButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(habitButtonPressed), for: .touchUpInside)
+        button.tag = 1
         return button
     }()
     
-    // Кнопка создания привычки
-    private let unregularButton: UIButton = {
+    // Кнопка создания нерегулярного события
+    private lazy var unregularButton: UIButton = {
         let button = UIButton()
         button.setTitle("Нерегулярное событие", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "unregularButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(unregularButtonPressed), for: .touchUpInside)
+        button.tag = 2
         return button
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        habitVCConstrait()
+    }
         
-        view.addSubview(viewControllerName)
-        viewControllerName.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-           // viewControllerName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 88),
-            viewControllerName.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
+    /// Привязка элементов к экрану
+    private func habitVCConstrait() {
+        [viewControllerName,
+         habitButton,
+         unregularButton].forEach {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         view.accessibilityIdentifier = "TrackerCreationVC"
         view.backgroundColor = .white
         
-        view.addSubview(habitButton)
-        view.addSubview(unregularButton)
-        habitButton.translatesAutoresizingMaskIntoConstraints = false
-        unregularButton.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
+            viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
+            viewControllerName.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
             habitButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            unregularButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            habitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:395),
-            unregularButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:471),
+            habitButton.topAnchor.constraint(equalTo: viewControllerName.bottomAnchor, constant:281),
             habitButton.widthAnchor.constraint(equalToConstant: 335),
-            unregularButton.widthAnchor.constraint(equalToConstant: 335),
             habitButton.heightAnchor.constraint(equalToConstant: 60),
+            
+            unregularButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            unregularButton.topAnchor.constraint(equalTo: habitButton.bottomAnchor, constant:16),
+            unregularButton.widthAnchor.constraint(equalToConstant: 335),
             unregularButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+
+    @objc private func habitButtonPressed() {
+        let controller = HabitViewController()
+        controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
+        let type = "Привычка"
+        delegate?.didSelectHabbitType(type: type)
         
-        
+        self.present(controller, animated: true, completion: nil)
     }
     
-    @objc func habitButtonPressed() {
+    @objc private func unregularButtonPressed() {
+        let controller = UnregularViewController()
         
-    }
-    
-    @objc func unregularButtonPressed() {
-        
+        self.present(controller, animated: true, completion: nil)
     }
     
 }

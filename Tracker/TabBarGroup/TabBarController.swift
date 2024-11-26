@@ -6,31 +6,36 @@
 //
 
 import UIKit
-final class TabBarController: UITabBarController, UITabBarControllerDelegate {
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
+final class TabBarController: UITabBarController {
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.delegate = self
-        self.tabBar.backgroundColor = UIColor.white
+        tabBarSetup()
+    }
     
-        let trackerViewController = TrackerViewController()
+    /// Настройки таббара
+    private func tabBarSetup() {
+        let trackerViewController = UINavigationController(rootViewController: TrackerViewController())
         trackerViewController.tabBarItem = UITabBarItem(title: "Трекеры",
                                                         image: UIImage(named: "TrackerTabImage"),
                                                         selectedImage: nil)
         
-        let statisticViewController = StatisticViewController()
+        let statisticViewController = UINavigationController(rootViewController: StatisticViewController())
         statisticViewController.tabBarItem = UITabBarItem(title: "Статистика",
                                                         image: UIImage(named: "StatisticTabImage"),
                                                         selectedImage: nil)
         
-        
         self.viewControllers = [trackerViewController, statisticViewController]
+        
+        let lineLayer = CALayer()
+        lineLayer.backgroundColor = UIColor.ypGray.cgColor
+        lineLayer.frame = CGRect(x: 0, y: 0, width: self.tabBar.bounds.width, height: 1)
+        self.tabBar.layer.addSublayer(lineLayer)
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        print("Selected \(viewController.title)")
+        guard let tabBarTitle = viewController.tabBarItem.title else {return}
+        print("Выбрана страница \(tabBarTitle)")
     }
     
   
