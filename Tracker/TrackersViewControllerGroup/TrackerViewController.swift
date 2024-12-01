@@ -14,6 +14,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     var visibleTrackers: [Tracker] = []
     
     
+    
     /// Кнопка выбора даты
     private lazy var pickerDate: UIDatePicker = {
        let datePicker = UIDatePicker()
