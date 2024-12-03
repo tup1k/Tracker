@@ -8,10 +8,10 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     var completedTrackers: [TrackerRecord] = []
     var completedTrackersID = Set<UUID>()
     var categoryName:[String] = []
-    
     var visibleTrackersWithCategory: [TrackerCategory] = []
-    
     var visibleTrackers: [Tracker] = []
+    
+    let trackerStore = TrackerStore.shared
     
     
     
