@@ -38,6 +38,7 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     /// Функция выгрузки параметров сохраненного в CoreData трекера
     func importCoreDataTracker() -> [TrackerCoreData] {
         let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "trackerName", ascending: true)]
         
         fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                              managedObjectContext: context,
@@ -47,6 +48,7 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         
         do {
             try fetchedResultController?.performFetch()
+            print("ВЫПОЛНЕНА ПОДГРУЗКА ТРЕКЕРОВ ИЗ CORE DATA")
         } catch {
             print("ОШИБКА ВЫЗОВА fetchedResultController: \(error.localizedDescription)")
         }

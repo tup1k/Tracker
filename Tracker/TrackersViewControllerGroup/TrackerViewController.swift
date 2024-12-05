@@ -12,8 +12,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     var visibleTrackers: [Tracker] = []
     
     let trackerStore = TrackerStore.shared
-    
-    
+    let trackerRecordStore = TrackerRecordStore.shared
     
     /// Кнопка выбора даты
     private lazy var pickerDate: UIDatePicker = {
@@ -85,6 +84,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         super.viewDidLoad()
         setNavigationBar()
         commonTrackerVCConstraint()
+        trackerStore.importCoreDataTracker()
         mokTrackers()
         
         trackerCollectionView.dataSource = self
@@ -155,40 +155,28 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         let calendar = Calendar.current
         var currentWeekDay = calendar.component(.weekday, from: currentDate)
         currentWeekDay = (currentWeekDay + 5) % 7
+        let trackersFromCoreData = trackerStore.importCoreDataTracker()
+        let appTrackers = trackersFromCoreData.map { Tracker(from: $0)}
         
         visibleTrackers = []
         
-        for category in categories {
-            for onetracker in category.categoryTrackers where (onetracker.trackerShedule.contains(Days.allCases[currentWeekDay]))  {
-                visibleTrackers.append(onetracker)
-            }
-        }
-        
-        for one in visibleTrackers {
-            print("Дата в трекере:\(one.trackerShedule) и \(Days.allCases[currentWeekDay])")
+        visibleTrackers = appTrackers.filter { tracker in
+            let trackerScheduleDays = tracker.trackerShedule.contains(Days.allCases[currentWeekDay])
+            return trackerScheduleDays
         }
         
         visibleTrackers = Array(visibleTrackers.reduce(into: [UUID: Tracker]()) { $0[$1.id] = $1 }.values)
-        for tracker in visibleTrackers {
-            print(tracker.trackerName)
-        }
-        
-        print(visibleTrackers.count)
+    
         trackerCollectionView.reloadData()
         placeholderVisible()
     }
     
     /// Функция отображения заглушки
     private func placeholderVisible() {
-        if visibleTrackers.isEmpty {
-            trackerPlaceholderImage.isHidden = false
-            trackerPlaceholderLabel.isHidden = false
-            trackerCollectionView.isHidden = true
-        } else {
-            trackerPlaceholderImage.isHidden = true
-            trackerPlaceholderLabel.isHidden = true
-            trackerCollectionView.isHidden = false
-        }
+        let emptyVisibleTrackers: Bool = visibleTrackers.isEmpty
+        trackerPlaceholderImage.isHidden = !emptyVisibleTrackers
+        trackerPlaceholderLabel.isHidden = !emptyVisibleTrackers
+        trackerCollectionView.isHidden = emptyVisibleTrackers
     }
     
     /// Функция нажатие кнопки +
@@ -221,12 +209,11 @@ extension TrackerViewController: UICollectionViewDataSource {
         let tracker = visibleTrackers[indexPath.row]
         print("ИМЯ ТРЕКЕРА В КОЛЛЕКЦИИ: \(tracker.trackerName)")
         
-        let isCompletedToday = completedTrackers.contains {
-            $0.id == tracker.id && Calendar.current.isDate($0.trackerDate, inSameDayAs: currentDate ?? Date())
-        }
+        let isCompletedToday = trackerRecordStore.importCoreDataRecordComplete(id: tracker.id, trackerDate: currentDate ?? Date())
+        
         cell.trackerDone = isCompletedToday
-        let completeTrackersCount = completedTrackers.filter { $0.id == tracker.id }.count
-        cell.configure(with: tracker, completedCount: completeTrackersCount, isCompletedToday: isCompletedToday)
+        cell.currentDate = currentDate ?? Date()
+        cell.configure(with: tracker, isCompletedToday: isCompletedToday)
         cell.delegate = self
         
         if (currentDate ?? Date()) <= Date() {
@@ -316,35 +303,22 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 extension TrackerViewController: TrackerCellDelegate {
     func completeTracker(_ trackerCell: TrackerCellViewController, id: UUID, trackerDone: Bool) {
         let calendar = Calendar.current
+        let selectedDate = calendar.startOfDay(for: pickerDate.date)
         
         if trackerDone {
             completedTrackersID.insert(id)
-            let trackerRecord = TrackerRecord(id: id, trackerDate: pickerDate.date)
-            completedTrackers.append(trackerRecord)
+            trackerRecordStore.saveRecordToCoreData(id: id, trackerDate: currentDate ?? Date())
             trackerCollectionView.reloadData()
-            if !completedTrackers.contains(where: { $0.id == id && calendar.isDate($0.trackerDate, inSameDayAs: currentDate ?? Date()) }) {
-                completedTrackers.append(trackerRecord)
-            }
-            print(completedTrackersID)
         } else {
             completedTrackersID.remove(id)
-            if let index = completedTrackers.firstIndex(where: { $0.id == id && calendar.isDate($0.trackerDate, inSameDayAs: currentDate ?? Date()) }) {
-                completedTrackers.remove(at: index)
-                print(completedTrackersID)
-            }
+            trackerRecordStore.deleteRecordFromCoreData(id: id, trackerDate: currentDate ?? Date())
             trackerCollectionView.reloadData()
         }
     }
 }
 
 extension TrackerViewController: AddNewTrackerViewControllerDelegate {
-    func addTracker(tracker: Tracker, selectedCategory: String) {
-        print("ВЫ ПЕРЕДАЛИ В ОСНОВНОЙ КОНТРОЛЛЕР СЛЕДУЮЩИЙ ТРЕКЕР: \(tracker)")
-        trackers.append(tracker)
-        
-        let newCategory = TrackerCategory(categoryName: selectedCategory, categoryTrackers: trackers)
-        self.categories = [newCategory]
-        
+    func addTracker() {
         trackerCollectionView.reloadData()
         currentTrackersView()
         placeholderVisible()

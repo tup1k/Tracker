@@ -33,9 +33,9 @@ final class TrackerRecordStore: NSObject {
         let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         let calendar = Calendar.current
         let startDay = calendar.startOfDay(for: trackerDate)
-        guard let endDay = calendar.date(byAdding: .day, value: 1, to: startDay) else { return }
+       let endDay = calendar.date(byAdding: .day, value: 1, to: startDay) ?? startDay
         
-        fetchRequest.predicate = NSPredicate(format: "id == %@ AND date < %@ AND date >= %@", id as CVarArg, startDay as NSDate, endDay as NSDate)
+        fetchRequest.predicate = NSPredicate(format: "id == %@ AND trackerDate < %@ AND trackerDate >= %@", id as CVarArg, endDay as NSDate, startDay as NSDate)
        
         do {
             let trackerRecord = try context.fetch(fetchRequest)
@@ -57,6 +57,7 @@ final class TrackerRecordStore: NSObject {
         
         do {
             let trackerRecord = try context.fetch(fetchRequest)
+            print("ДЛЯ ТРЕКЕРА С НОМЕРОМ \(id) КОЛИЧЕСТВО ВЫПОЛНЕННЫХ ТРЕКЕРОВ РАВНО \(trackerRecord.count)")
             return trackerRecord.count
         } catch {
             print("ОШИБКА ПОДСЧЕТА КОЛИЧЕСТВА ВЫПОЛНЕННЫХ ТРЕКЕРОВ ДЛЯ ТРЕКЕРА С НОМЕРОМ \(id): \(error.localizedDescription)")
@@ -70,8 +71,8 @@ final class TrackerRecordStore: NSObject {
         let calendar = Calendar.current
         let startDay = calendar.startOfDay(for: trackerDate)
         let endDay = calendar.date(byAdding: .day, value: 1, to: startDay) ?? startDay
-        
-        fetchRequest.predicate = NSPredicate(format: "id == %@ AND date < %@ AND date >= %@", id as CVarArg, startDay as NSDate, endDay as NSDate)
+
+        fetchRequest.predicate = NSPredicate(format: "id == %@ AND trackerDate >= %@ AND trackerDate < %@", id as CVarArg, startDay as CVarArg, endDay as CVarArg)
         
         do {
             let trackerRecord = try context.fetch(fetchRequest)

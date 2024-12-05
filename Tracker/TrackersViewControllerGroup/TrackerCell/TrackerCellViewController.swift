@@ -62,8 +62,12 @@ final class TrackerCellViewController: UICollectionViewCell {
     
     var trackerDone: Bool = false
     private var trackerID: UUID?
+    var currentDate: Date
+    
+    let trackerRecordStore = TrackerRecordStore.shared
     
     override init(frame: CGRect) {
+        self.currentDate = Date()
         super.init(frame: frame)
         
         contentView.backgroundColor = .ypWhite
@@ -112,24 +116,33 @@ final class TrackerCellViewController: UICollectionViewCell {
         ])
     }
     
+    /// Метод отрабатывающий нажатие на кнопку выполнения трекера
     @objc func checkTrackerButtonPressed() {
-       trackerDone = !trackerDone
-        let imageName = trackerDone ? "Checkmark" : "plus"
+        guard let id = trackerID else { return }
+        trackerDone = !trackerDone
+        let imageName = trackerDone ? "checkmark" : "plus"
         checkTrackerButton.setImage(UIImage(systemName: imageName), for: .normal)
         checkTrackerButton.alpha = trackerDone ? 0.3 : 1.0
-        if let id = trackerID {
-            delegate?.completeTracker(self, id: id, trackerDone: trackerDone)
-            print("НОМЕР ТРЕКЕРА \(id)")
+
+        if trackerDone {
+            trackerRecordStore.saveRecordToCoreData(id: id, trackerDate: currentDate)
+        } else {
+            trackerRecordStore.deleteRecordFromCoreData(id: id, trackerDate: currentDate)
         }
+        
+        let completedCountCoreData = trackerRecordStore.countCoreDataRecordComplete(id: id)
+        daysCountLable.text = daysText(for: completedCountCoreData)
     }
     
-    func configure(with tracker: Tracker, completedCount: Int, isCompletedToday: Bool) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool) {
+        trackerDone = isCompletedToday
         emojiLable.text = tracker.trackerEmoji
         titleLable.text = tracker.trackerName
         cellView.backgroundColor = tracker.trackerColor
         checkTrackerButton.backgroundColor = tracker.trackerColor
         trackerID = tracker.id
-        daysCountLable.text = daysText(for: completedCount)
+        let completedCountCoreData = trackerRecordStore.countCoreDataRecordComplete(id: tracker.id)
+        daysCountLable.text = daysText(for: completedCountCoreData)
         let imageName = trackerDone ? "checkmark" : "plus"
         checkTrackerButton.setImage(UIImage(systemName: imageName), for: .normal)
         checkTrackerButton.alpha = trackerDone ? 0.3 : 1.0
