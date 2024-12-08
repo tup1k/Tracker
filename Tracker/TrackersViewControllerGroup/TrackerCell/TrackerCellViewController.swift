@@ -117,7 +117,7 @@ final class TrackerCellViewController: UICollectionViewCell {
     }
     
     /// Метод отрабатывающий нажатие на кнопку выполнения трекера
-    @objc func checkTrackerButtonPressed() {
+    @objc private func checkTrackerButtonPressed() {
         guard let id = trackerID else { return }
         trackerDone = !trackerDone
         let imageName = trackerDone ? "checkmark" : "plus"
