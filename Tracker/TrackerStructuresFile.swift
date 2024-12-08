@@ -8,12 +8,34 @@
 import UIKit
 
 ///  Структура трекера
-struct Tracker {
+class Tracker {
     let id: UUID
     let trackerName: String
     let trackerColor: UIColor
     let trackerEmoji: String
     let trackerShedule: [Days]
+    
+    init(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days]) {
+        self.id = id
+        self.trackerName = trackerName
+        self.trackerColor = trackerColor
+        self.trackerEmoji = trackerEmoji
+        self.trackerShedule = trackerShedule
+    }
+    
+    convenience init(from trackersFromCoreData: TrackerCoreData) {
+        let stringColor = trackersFromCoreData.trackerColor ?? "#AEAFB4"
+        let trackerUIColor = UIColor(hex: stringColor) ?? .ypGray
+        let trackerCoreDataSchedule = CoreDataScheduleTransformer.shared.stringToDays(stringDays: trackersFromCoreData.trackerShedule ?? "")
+        
+        self.init(
+            id: trackersFromCoreData.id ?? UUID(),
+            trackerName: trackersFromCoreData.trackerName ?? "",
+            trackerColor: trackerUIColor,
+            trackerEmoji: trackersFromCoreData.trackerEmoji ?? "",
+            trackerShedule: trackerCoreDataSchedule
+        )
+    }
 }
 
 /// Структура категорий трекеров

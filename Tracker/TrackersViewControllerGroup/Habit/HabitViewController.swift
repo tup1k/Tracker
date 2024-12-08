@@ -8,13 +8,14 @@
 import UIKit
 
 protocol AddNewTrackerViewControllerDelegate: AnyObject {
-    func addTracker(tracker: Tracker, selectedCategory: String)
+    func addTracker()
 }
 
 final class HabitViewController: UIViewController {
     let trackerColors = Colors()
     let trackerEmoji = Emoji()
     let categoryVC = TrackerViewController()
+    let trackerStore = TrackerStore.shared
     
     weak var delegate: AddNewTrackerViewControllerDelegate?
     
@@ -239,7 +240,8 @@ final class HabitViewController: UIViewController {
         guard let category = selectedCategory else { return }
         
         let newTracker = Tracker(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule)
-        delegate?.addTracker(tracker: newTracker, selectedCategory: category )
+        trackerStore.saveTrackerToCoreData(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule)
+        delegate?.addTracker()
         print("СОЗДАН ТРЕКЕР С НОМЕРОМ \(newTracker.id), ИМЕНЕМ \(name), ЦВЕТОМ \(color), ЭМОДЗИ \(emoji), ДНЯМИ НЕДЕЛИ \(newTracker.trackerShedule)")
         
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
@@ -397,14 +399,14 @@ extension HabitViewController: UICollectionViewDataSource {
     
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        var id: String                                      // 1
-        switch kind {                                       // 2
-        case UICollectionView.elementKindSectionHeader:     // 3
+        var id: String
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
             id = "header"
-        case UICollectionView.elementKindSectionFooter:     // 4
+        case UICollectionView.elementKindSectionFooter:
             id = "footer"
         default:
-            id = ""                                         // 5
+            id = ""                                         
         }
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! HabbitCellSupplementaryView // 6
