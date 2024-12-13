@@ -91,6 +91,8 @@ final class TrackerCreationViewController: UIViewController {
         let type = "Привычка"
         delegate?.didSelectHabbitType(type: type)
         
+        
+        
         self.present(controller, animated: true, completion: nil)
     }
     

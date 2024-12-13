@@ -474,7 +474,7 @@ extension HabitViewController: ScheduleViewControllerDelegate {
 }
 
 extension HabitViewController: CategoryViewControllerDelegate {
-    func newCategory(category: String) {
+    func newCategorySelect(category: String) {
         self.selectedCategory = category
         blockButtons()
         habbitPropertiesTableView.reloadData()

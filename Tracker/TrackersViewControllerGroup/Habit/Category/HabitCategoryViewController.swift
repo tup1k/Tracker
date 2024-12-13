@@ -8,15 +8,18 @@
 import UIKit
 
 protocol CategoryViewControllerDelegate: AnyObject {
-    func newCategory(category: String)
+    func newCategorySelect(category: String)
 }
 
 
 final class HabitCategoryViewController: UIViewController {
     weak var delegate: CategoryViewControllerDelegate?
     private var selectedCategory: String?
-    private var actualCategories: [String] = []
+//    private var actualCategories: [String] = []
+//    private var actualCategories: [TrackerCategoryCoreData] = []
     private let categoryVC = TrackerViewController()
+    private let viewModel = CategoryViewModel()
+    private let trackerCategoryStore = TrackerCategoryStore.shared
     
     /// Заголовок
     private lazy var categoryTitle: UILabel = {
@@ -79,12 +82,19 @@ final class HabitCategoryViewController: UIViewController {
             view.accessibilityIdentifier = "HabitCategoryVC"
             view.backgroundColor = .ypWhite
             
-            categoryVC.mokTrackers()
-            actualCategories = categoryVC.categoryName
+//            categoryVC.mokTrackers()
+//            actualCategories = categoryVC.categoryName
             
             categoriesTableView.dataSource = self
             categoriesTableView.delegate = self
+           
+            viewModel.loadCategoriesFromCoreData()
+//            viewModel.actualCategories
+//            print(actualCategories)
             createView()
+            bending()
+           
+//            categoriesTableView.reloadData()
         }
     
     // Создание UI
@@ -125,37 +135,44 @@ final class HabitCategoryViewController: UIViewController {
             createCategoryButton.heightAnchor.constraint(equalToConstant: 60),
         ])
         
-        let isActualCategoriesIsEmpty = actualCategories.count > 0
-        categoryPlaceholderImage.isHidden = isActualCategoriesIsEmpty
-        categoryPlaceholderLabel.isHidden = isActualCategoriesIsEmpty
-        categoriesTableView.isHidden = !isActualCategoriesIsEmpty
+//        let isActualCategoriesIsEmpty = actualCategories.count > 0
+//        categoryPlaceholderImage.isHidden = isActualCategoriesIsEmpty
+//        categoryPlaceholderLabel.isHidden = isActualCategoriesIsEmpty
+//        categoriesTableView.isHidden = !isActualCategoriesIsEmpty
     }
         
-    /// В данный момент эта кнопка сохраняет выбор категории
+    /// Кнопка открывает окно создание новых категорий
     @objc private func categoryButtonPressed() {
-        if let category = selectedCategory {
-            delegate?.newCategory(category: category)
-            print("ПОЛЬЗОВАТЕЛЬ ВЫБРАЛ КАТЕГОРИЮ: \(selectedCategory)")
+        let controller = NewCategoryViewController()
+        controller.delegate = self
+        self.present(controller, animated: true, completion: nil)
+    }
+    
+    func bending() {
+        viewModel.didUpdateCategories = { [weak self] in
+            guard let self else {return}
+            categoryPlaceholderImage.isHidden = !viewModel.actualCategories.isEmpty
+            categoryPlaceholderLabel.isHidden = !viewModel.actualCategories.isEmpty
+            categoriesTableView.reloadData()
         }
-        dismiss(animated: true, completion: nil)
     }
 }
 
 extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        actualCategories.count
+        return viewModel.actualCategories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        let category = actualCategories[indexPath.row]
+        let category = viewModel.actualCategories[indexPath.row]
         cell.textLabel?.text = category
         cell.textLabel?.textColor = .ypBlack
         cell.backgroundColor = .ypAppBackground
         cell.selectionStyle = .none
         cell.accessoryType = (category == selectedCategory) ? .checkmark : .none
         
-        if indexPath.row == actualCategories.count - 1 {
+        if indexPath.row == viewModel.actualCategories.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
         } else {
             cell.separatorInset = .zero
@@ -169,13 +186,57 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let category = actualCategories[indexPath.row]
+        let category = viewModel.actualCategories[indexPath.row]
         if selectedCategory == category {
             selectedCategory = nil
         } else {
             selectedCategory = category
         }
         tableView.reloadData()
+        
+        if let newCategory = selectedCategory {
+            delegate?.newCategorySelect(category: newCategory)
+            print("ПОЛЬЗОВАТЕЛЬ ВЫБРАЛ КАТЕГОРИЮ: \(newCategory)")
+        } else { return }
+    
+        dismiss(animated: true, completion: nil)
+    }
+ 
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let category = viewModel.actualCategories[indexPath.row]
+        
+        return UIContextMenuConfiguration(identifier: nil,
+                                          previewProvider: nil,
+                                          actionProvider: {
+                action in
+            let editAction =
+                UIAction(title: NSLocalizedString("Редактировать", comment: ""),
+                         image: UIImage(systemName: "pencil")) { action in
+                   try? self.viewModel.editCategory(indexPath: indexPath)
+                }
+           
+            let deleteAction =
+                UIAction(title: NSLocalizedString("Удалить", comment: ""),
+                         image: UIImage(systemName: "trash"),
+                         attributes: .destructive) { action in
+                    self.viewModel.deleteCategory(category)
+//                   try? self.viewModel.loadCategoriesFromCoreData()
+//                    self.categoriesTableView.reloadData()
+                    print(self.viewModel.actualCategories)
+                }
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        })
+    }
+    
+    
+}
+
+extension HabitCategoryViewController: NewCategoryViewControllerDelegate {
+    func createNewCategoryName(categoryName: String) {
+        viewModel.addCategory(categoryName: categoryName)
+//        self.actualCategories = viewModel.actualCategories
+        categoriesTableView.reloadData()
     }
 }
 

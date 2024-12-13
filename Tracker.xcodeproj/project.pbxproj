@@ -38,6 +38,8 @@
 		84CACBB52D05B27F003E489C /* OnboardingViewControllerOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACBB42D05B27F003E489C /* OnboardingViewControllerOne.swift */; };
 		84CACBB82D05B2AB003E489C /* OnboardingViewControllerSecond.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACBB72D05B2AB003E489C /* OnboardingViewControllerSecond.swift */; };
 		84CACBBA2D05E21A003E489C /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACBB92D05E21A003E489C /* OnboardingViewController.swift */; };
+		84CACBFD2D078364003E489C /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACBFC2D078364003E489C /* NewCategoryViewController.swift */; };
+		84CACC012D0CC143003E489C /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACC002D0CC143003E489C /* CategoryViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +76,8 @@
 		84CACBB42D05B27F003E489C /* OnboardingViewControllerOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewControllerOne.swift; sourceTree = "<group>"; };
 		84CACBB72D05B2AB003E489C /* OnboardingViewControllerSecond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewControllerSecond.swift; sourceTree = "<group>"; };
 		84CACBB92D05E21A003E489C /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		84CACBFC2D078364003E489C /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
+		84CACC002D0CC143003E489C /* CategoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,19 +110,19 @@
 		840FDD0A2CCE410B006A71E3 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				84CACBB62D05B284003E489C /* OnboardingVC */,
 				840FDD0B2CCE410B006A71E3 /* AppDelegate.swift */,
 				840FDD0D2CCE410B006A71E3 /* SceneDelegate.swift */,
 				84374D912CDC0D990062B10E /* Colors+Emoji.swift */,
 				84CACBB22CFF817C003E489C /* Extension.swift */,
 				84374D9E2CE27F230062B10E /* TrackerStructuresFile.swift */,
+				84CACBB62D05B284003E489C /* OnboardingVC */,
 				840FDD982CD57420006A71E3 /* TabBarGroup */,
 				840FDD992CD5743B006A71E3 /* TrackersViewControllerGroup */,
 				840FDD9A2CD57451006A71E3 /* StatisticViewControllerGroup */,
+				84374DDD2CF65DE20062B10E /* CoreData */,
 				840FDD142CCE410D006A71E3 /* Assets.xcassets */,
 				840FDD162CCE410D006A71E3 /* LaunchScreen.storyboard */,
 				840FDD192CCE410D006A71E3 /* Info.plist */,
-				84374DDD2CF65DE20062B10E /* CoreData */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -177,7 +181,9 @@
 		84374D952CDFC98F0062B10E /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				84CACC002D0CC143003E489C /* CategoryViewModel.swift */,
 				84374D932CDFC9850062B10E /* HabitCategoryViewController.swift */,
+				84CACBFC2D078364003E489C /* NewCategoryViewController.swift */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -307,6 +313,7 @@
 				84374DAD2CF232760062B10E /* UnregularCategoryViewController.swift in Sources */,
 				84374D942CDFC9850062B10E /* HabitCategoryViewController.swift in Sources */,
 				84CACBB52D05B27F003E489C /* OnboardingViewControllerOne.swift in Sources */,
+				84CACBFD2D078364003E489C /* NewCategoryViewController.swift in Sources */,
 				84CACBAB2CFCC60D003E489C /* TrackerStore.swift in Sources */,
 				84374DA92CEFD8530062B10E /* UnregularCollectionViewCell.swift in Sources */,
 				84374D8A2CD961950062B10E /* HabitViewController.swift in Sources */,
@@ -326,6 +333,7 @@
 				84CACBAF2CFCC634003E489C /* TrackerRecordStore.swift in Sources */,
 				84374D922CDC0D990062B10E /* Colors+Emoji.swift in Sources */,
 				84CACBB12CFE3591003E489C /* CoreDataScheduleTransformer.swift in Sources */,
+				84CACC012D0CC143003E489C /* CategoryViewModel.swift in Sources */,
 				84374D8E2CDC0A310062B10E /* HabbitCollectionViewCell.swift in Sources */,
 				840FDD202CCE514E006A71E3 /* TabBarController.swift in Sources */,
 				84374D972CE0C8C30062B10E /* HabitScheduleViewController.swift in Sources */,
