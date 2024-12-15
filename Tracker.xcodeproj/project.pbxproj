@@ -40,6 +40,7 @@
 		84CACBBA2D05E21A003E489C /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACBB92D05E21A003E489C /* OnboardingViewController.swift */; };
 		84CACBFD2D078364003E489C /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACBFC2D078364003E489C /* NewCategoryViewController.swift */; };
 		84CACC012D0CC143003E489C /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACC002D0CC143003E489C /* CategoryViewModel.swift */; };
+		84CACC032D0CC570003E489C /* EditCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACC022D0CC570003E489C /* EditCategoryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		84CACBB92D05E21A003E489C /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		84CACBFC2D078364003E489C /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 		84CACC002D0CC143003E489C /* CategoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
+		84CACC022D0CC570003E489C /* EditCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +186,7 @@
 				84CACC002D0CC143003E489C /* CategoryViewModel.swift */,
 				84374D932CDFC9850062B10E /* HabitCategoryViewController.swift */,
 				84CACBFC2D078364003E489C /* NewCategoryViewController.swift */,
+				84CACC022D0CC570003E489C /* EditCategoryViewController.swift */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				84374D922CDC0D990062B10E /* Colors+Emoji.swift in Sources */,
 				84CACBB12CFE3591003E489C /* CoreDataScheduleTransformer.swift in Sources */,
 				84CACC012D0CC143003E489C /* CategoryViewModel.swift in Sources */,
+				84CACC032D0CC570003E489C /* EditCategoryViewController.swift in Sources */,
 				84374D8E2CDC0A310062B10E /* HabbitCollectionViewCell.swift in Sources */,
 				840FDD202CCE514E006A71E3 /* TabBarController.swift in Sources */,
 				84374D972CE0C8C30062B10E /* HabitScheduleViewController.swift in Sources */,

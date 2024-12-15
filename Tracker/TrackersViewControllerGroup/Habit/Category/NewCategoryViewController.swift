@@ -37,7 +37,7 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 0))
         textField.leftView = paddingView
         textField.leftViewMode = .always
-        textField.addTarget(self, action: #selector(newCategoryName(_:)), for: .editingChanged)
+        textField.addTarget(self, action: #selector(editCategoryName(_:)), for: .editingChanged)
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -93,7 +93,7 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
     }
     
     
-    @objc private func newCategoryName(_ sender: UITextField) {
+    @objc private func editCategoryName(_ sender: UITextField) {
         blockButtons()
     }
     

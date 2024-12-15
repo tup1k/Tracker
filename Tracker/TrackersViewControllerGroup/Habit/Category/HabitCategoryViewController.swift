@@ -32,13 +32,16 @@ final class HabitCategoryViewController: UIViewController {
     
     /// Таблица с категориями
     private lazy var categoriesTableView: UITableView = {
-        let tableView = UITableView(frame: view.bounds, style: .insetGrouped)
+        let tableView = UITableView(frame: .zero, style: .plain)
+//        let tableView = UITableView(frame: view.bounds, style: .insetGrouped)
         tableView.isScrollEnabled = false
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .singleLine
-        tableView.separatorColor = .ypLightGray
+        tableView.separatorInset.left = 16
+        tableView.separatorInset.right = 16
+        tableView.separatorColor = .ypBlack
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
@@ -124,8 +127,8 @@ final class HabitCategoryViewController: UIViewController {
             
             categoriesTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             categoriesTableView.topAnchor.constraint(equalTo: categoryTitle.bottomAnchor, constant: 24),
-            categoriesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            categoriesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            categoriesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoriesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             categoriesTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             createCategoryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -135,10 +138,10 @@ final class HabitCategoryViewController: UIViewController {
             createCategoryButton.heightAnchor.constraint(equalToConstant: 60),
         ])
         
-//        let isActualCategoriesIsEmpty = actualCategories.count > 0
-//        categoryPlaceholderImage.isHidden = isActualCategoriesIsEmpty
-//        categoryPlaceholderLabel.isHidden = isActualCategoriesIsEmpty
-//        categoriesTableView.isHidden = !isActualCategoriesIsEmpty
+        let isActualCategoriesIsEmpty = viewModel.actualCategories.count > 0
+        categoryPlaceholderImage.isHidden = isActualCategoriesIsEmpty
+        categoryPlaceholderLabel.isHidden = isActualCategoriesIsEmpty
+        categoriesTableView.isHidden = !isActualCategoriesIsEmpty
     }
         
     /// Кнопка открывает окно создание новых категорий
@@ -151,8 +154,8 @@ final class HabitCategoryViewController: UIViewController {
     func bending() {
         viewModel.didUpdateCategories = { [weak self] in
             guard let self else {return}
-            categoryPlaceholderImage.isHidden = !viewModel.actualCategories.isEmpty
-            categoryPlaceholderLabel.isHidden = !viewModel.actualCategories.isEmpty
+//            categoryPlaceholderImage.isHidden = !viewModel.actualCategories.isEmpty
+//            categoryPlaceholderLabel.isHidden = !viewModel.actualCategories.isEmpty
             categoriesTableView.reloadData()
         }
     }
@@ -172,10 +175,20 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
         cell.selectionStyle = .none
         cell.accessoryType = (category == selectedCategory) ? .checkmark : .none
         
+//        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
+        
+//        if indexPath.row == viewModel.actualCategories.count - 1 {
+//            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
+//        } else {
+//            cell.separatorInset = .zero
+//        }
+        
         if indexPath.row == viewModel.actualCategories.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+            cell.layoutMargins = .zero
         } else {
-            cell.separatorInset = .zero
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
         
         return cell
@@ -204,31 +217,52 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
  
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let category = viewModel.actualCategories[indexPath.row]
+//        guard indexPath.row != 0 else {return nil}
         
-        return UIContextMenuConfiguration(identifier: nil,
-                                          previewProvider: nil,
-                                          actionProvider: {
-                action in
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { action in
             let editAction =
                 UIAction(title: NSLocalizedString("Редактировать", comment: ""),
                          image: UIImage(systemName: "pencil")) { action in
-                   try? self.viewModel.editCategory(indexPath: indexPath)
+//                   try? self.viewModel.editCategory(indexPath: indexPath)
+                    self.editCategoryName(indexPath: indexPath)
                 }
            
             let deleteAction =
                 UIAction(title: NSLocalizedString("Удалить", comment: ""),
                          image: UIImage(systemName: "trash"),
                          attributes: .destructive) { action in
-                    self.viewModel.deleteCategory(category)
-//                   try? self.viewModel.loadCategoriesFromCoreData()
-//                    self.categoriesTableView.reloadData()
-                    print(self.viewModel.actualCategories)
+                    self.deleteCategory(indexPath: indexPath)
+//                    self.viewModel.deleteCategory(category)
                 }
             return UIMenu(title: "", children: [editAction, deleteAction])
         })
     }
     
+    
+    private func editCategoryName(indexPath: IndexPath) {
+        let controller = EditCategoryViewController()
+        let category = viewModel.actualCategories[indexPath.row]
+        controller.delegate = self
+        controller.oldCategoryName = category
+        self.present(controller, animated: true, completion: nil)
+    }
+    
+    /// Метод удаления категории через алерт и viewmodel
+    private func deleteCategory(indexPath: IndexPath) {
+        let category = self.viewModel.actualCategories[indexPath.row]
+        
+        let alert = UIAlertController(title: "Эта категория точне не нужна?", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Удалить",
+                                      style: .destructive,
+                                      handler: { [weak self] _ in
+            
+            guard let self else { return }
+            self.viewModel.deleteCategory(category)
+            
+        }))
+        alert.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
     
 }
 
@@ -236,6 +270,13 @@ extension HabitCategoryViewController: NewCategoryViewControllerDelegate {
     func createNewCategoryName(categoryName: String) {
         viewModel.addCategory(categoryName: categoryName)
 //        self.actualCategories = viewModel.actualCategories
+        categoriesTableView.reloadData()
+    }
+}
+
+extension HabitCategoryViewController: EditCategoryViewControllerDelegate {
+    func editNewCategoryName(oldCategoryName: String, newCategoryName: String) {
+        try? viewModel.editCategory(categoryName: oldCategoryName, newCategoryName: newCategoryName)
         categoriesTableView.reloadData()
     }
 }

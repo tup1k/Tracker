@@ -285,17 +285,29 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         }
         
         let indexPath = indexPaths[0]
-        return UIContextMenuConfiguration(actionProvider: { actions in    // 4
-            return UIMenu(children: [                                     // 5
-                UIAction(title: "Редактировать") {  _ in                // 6
-                    let alert = UIAlertController(title: "Внимание!",
-                                                  message: "Данная функция доступна \nв платной версии",
-                                                  preferredStyle: .alert)
-                    let action = UIAlertAction(title: "OK", style: .default)
-                    alert.addAction(action)
-                    self.present(alert, animated: true, completion: nil)
-                },
-                                    ])
+        return UIContextMenuConfiguration(actionProvider: { actions in
+            
+            let pinTracker =
+            UIAction(title: NSLocalizedString("Закрепить", comment: ""),
+                     image: UIImage(systemName: "pin")) { action in
+                
+                // TO DO
+            }
+            
+            let editTracker =
+            UIAction(title: NSLocalizedString("Редактировать", comment: ""),
+                     image: UIImage(systemName: "pencil")) { action in
+                // TO DO
+            }
+            
+            let deleteAction =
+            UIAction(title: NSLocalizedString("Удалить", comment: ""),
+                     image: UIImage(systemName: "trash"),
+                     attributes: .destructive) { action in
+                // TO DO
+            }
+            
+            return UIMenu(title: "", children: [pinTracker, editTracker, deleteAction])
         })
     }
 }

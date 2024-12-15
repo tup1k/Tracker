@@ -41,9 +41,13 @@ final class CategoryViewModel {
         }
     }
     
-    func editCategory(indexPath: IndexPath) throws {
-//        trackerCategoryStore.editCategoryNameToCoreData(indexPath: indexPath, newCategoryName: <#String#>)
-       try loadCategoriesFromCoreData()
+    func editCategory(categoryName: String, newCategoryName: String) throws {
+        do {
+            try trackerCategoryStore.editCategoryNameToCoreData(categoryName: categoryName, newCategoryName: newCategoryName)
+            actualCategories = actualCategories.map({$0 == categoryName ? newCategoryName : $0})
+        } catch {
+            print("ОШИБКА РЕДАКТИРОВАНИЯ ИМЕНИ КАТЕГОРИИ: \(error.localizedDescription)")
+            return
+        }
     }
-    
 }
