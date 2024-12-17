@@ -8,7 +8,7 @@
 import UIKit
 
 protocol AddNewTrackerViewControllerDelegate: AnyObject {
-    func addTracker()
+    func addTracker(category: String, tracker: Tracker)
 }
 
 final class HabitViewController: UIViewController {
@@ -16,6 +16,8 @@ final class HabitViewController: UIViewController {
     let trackerEmoji = Emoji()
     let categoryVC = TrackerViewController()
     let trackerStore = TrackerStore.shared
+    var trackerType: String = ""
+    var tableViewHeight: Int = 150
     
     weak var delegate: AddNewTrackerViewControllerDelegate?
     
@@ -44,7 +46,11 @@ final class HabitViewController: UIViewController {
     /// Заголовок окна создания привычки
     private lazy var viewControllerName: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
+        if trackerType == "Habbit" {
+            label.text = "Новая привычка"
+        } else {
+            label.text = "Новое нерегулярное событий"
+        }
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -86,7 +92,11 @@ final class HabitViewController: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .ypLightGray
-        tableView.separatorStyle = .singleLine
+        if trackerType == "Habbit" {
+            tableView.separatorStyle = .singleLine
+        } else {
+            tableView.separatorStyle = .none
+        }
         tableView.separatorColor = .ypBlack
         tableView.separatorInset.left = 16
         tableView.separatorInset.right = 16
@@ -148,13 +158,15 @@ final class HabitViewController: UIViewController {
         
         view.accessibilityIdentifier = "HabitVC"
         view.backgroundColor = .ypWhite
-        
+
         createView()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(keyboardSwitchOff))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
         habbitName.delegate = self
+        
+       
       }
 
     /// Метод создания UI
@@ -183,6 +195,11 @@ final class HabitViewController: UIViewController {
         habbitContentView.addSubview(habbitButtonsStack)
         habbitButtonsStack.translatesAutoresizingMaskIntoConstraints = false
   
+        if trackerType == "Event" {
+            tableViewHeight = 75
+        } else {
+            tableViewHeight = 150
+        }
         
         NSLayoutConstraint.activate([
             viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
@@ -213,7 +230,7 @@ final class HabitViewController: UIViewController {
             habbitPropertiesTableView.centerXAnchor.constraint(equalTo: habbitContentView.centerXAnchor),
             habbitPropertiesTableView.leadingAnchor.constraint(equalTo: habbitContentView.leadingAnchor, constant: 16),
             habbitPropertiesTableView.trailingAnchor.constraint(equalTo: habbitContentView.trailingAnchor, constant: -16),
-            habbitPropertiesTableView.heightAnchor.constraint(equalToConstant: 150),
+            habbitPropertiesTableView.heightAnchor.constraint(equalToConstant: CGFloat(tableViewHeight)),
             
             habbitCollectionView.topAnchor.constraint(equalTo: habbitPropertiesTableView.bottomAnchor, constant: 32),
             habbitCollectionView.leadingAnchor.constraint(equalTo: habbitContentView.leadingAnchor),
@@ -238,11 +255,16 @@ final class HabitViewController: UIViewController {
         guard let color = selectedColor else { return }
         guard let emoji = selectedEmoji else { return }
         guard let category = selectedCategory else { return }
+
         
-        let newTracker = Tracker(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule)
-        trackerStore.saveTrackerToCoreData(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule)
-        delegate?.addTracker()
-        print("СОЗДАН ТРЕКЕР С НОМЕРОМ \(newTracker.id), ИМЕНЕМ \(name), ЦВЕТОМ \(color), ЭМОДЗИ \(emoji), ДНЯМИ НЕДЕЛИ \(newTracker.trackerShedule)")
+        if trackerType == "Event" {
+            schedule = Days.allCases
+        }
+        let newTracker = Tracker(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: trackerType)
+        trackerStore.saveTrackerToCoreData(tracker: newTracker, categoryName: category)
+        
+        delegate?.addTracker(category: category, tracker: newTracker)
+        print("СОЗДАН ТРЕКЕР С НОМЕРОМ \(newTracker.id), ИМЕНЕМ \(name), ЦВЕТОМ \(color), ЭМОДЗИ \(emoji), ДНЯМИ НЕДЕЛИ \(newTracker.trackerShedule), ТИП \(trackerType)")
         
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
@@ -255,16 +277,24 @@ final class HabitViewController: UIViewController {
     private func blockButtons() {
         guard let trackerName = habbitName.text else { return }
         
-        if trackerName.isEmpty == false && selectedCategory != nil &&
-            selectedCategory != "" && selectedSchedule != nil && 
-            selectedSchedule != "" && selectedEmoji != "" &&
-            selectedColor != nil && trackerName.count < 38 {
+        if trackerType == "Habbit" && trackerName.isEmpty == false &&
+            selectedCategory != nil && selectedCategory != "" &&
+            selectedSchedule != nil && selectedSchedule != "" &&
+            selectedEmoji != "" && selectedColor != nil &&
+            trackerName.count < 38 {
+            habbitTrackerCreate.isEnabled = true
+            habbitTrackerCreate.backgroundColor = .ypBlack
+        } else if trackerType == "Event" && trackerName.isEmpty == false &&
+                    selectedCategory != nil && selectedCategory != "" &&
+                    selectedEmoji != "" && selectedColor != nil &&
+                    trackerName.count < 38 {
             habbitTrackerCreate.isEnabled = true
             habbitTrackerCreate.backgroundColor = .ypBlack
         } else {
             habbitTrackerCreate.isEnabled = false
             habbitTrackerCreate.backgroundColor = .ypGray
         }
+        
         if trackerName.count > 38 {
             maxTrackerLength.isHidden = false
         } else {
@@ -277,10 +307,13 @@ final class HabitViewController: UIViewController {
     }
 }
 
-
 extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        if trackerType == "Habbit" {
+            return 2
+        } else {
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -292,25 +325,36 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
         cell.layer.cornerRadius = 16
         cell.layer.masksToBounds = true
         
-        if indexPath.row == 0 {
+        if trackerType == "Habbit" {
+            if indexPath.row == 0 {
+                let trackerCategory = selectedCategory ?? ""
+                cell.textLabel?.text = "Категория"
+                cell.detailTextLabel?.text = trackerCategory
+                cell.detailTextLabel?.textColor = .ypGray
+            } else if indexPath.row == 1 {
+                let trackerSchedule = selectedSchedule ?? ""
+                cell.textLabel?.text = "Расписание"
+                cell.detailTextLabel?.text = trackerSchedule
+                cell.detailTextLabel?.textColor = .ypGray
+                
+                if indexPath.row == 1 {
+                    cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+                    cell.layoutMargins = .zero
+                } else {
+                    cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+                    cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+                }
+            }
+        } else {
             let trackerCategory = selectedCategory ?? ""
             cell.textLabel?.text = "Категория"
             cell.detailTextLabel?.text = trackerCategory
             cell.detailTextLabel?.textColor = .ypGray
-        } else if indexPath.row == 1 {
-            let trackerSchedule = selectedSchedule ?? ""
-            cell.textLabel?.text = "Расписание"
-            cell.detailTextLabel?.text = trackerSchedule
-            cell.detailTextLabel?.textColor = .ypGray
             
-            if indexPath.row == 1 {
-                cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-                cell.layoutMargins = .zero
-            } else {
-                cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-                cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-            }
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+            cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
+        
         return cell
     }
     
@@ -321,13 +365,19 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if indexPath.row == 1 {
-            let controller = HabitScheduleViewController()
-            controller.delegate = self
-            self.present(controller, animated: true, completion: nil)
-        }
-        else {
-            let controller = HabitCategoryViewController()
+        if trackerType == "Habbit" {
+            if indexPath.row == 1 {
+                let controller = HabitScheduleViewController()
+                controller.delegate = self
+                self.present(controller, animated: true, completion: nil)
+            }
+            else {
+                let controller = CategoryViewController()
+                controller.delegate = self
+                self.present(controller, animated: true, completion: nil)
+            }
+        } else {
+            let controller = CategoryViewController()
             controller.delegate = self
             self.present(controller, animated: true, completion: nil)
         }
@@ -455,7 +505,6 @@ extension HabitViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: 18)
     }
-    
 }
 
 extension HabitViewController: ScheduleViewControllerDelegate {

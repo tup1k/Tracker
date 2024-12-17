@@ -8,8 +8,8 @@
 import UIKit
 
 protocol TrackerCreationViewControllerDelegate: AnyObject {
-    func didSelectHabbitType(type: String)
-    func didSelectUnregularType(type: String)
+    func didSelectHabbitType(trackerType: String)
+    func didSelectUnregularType(trackerType: String)
 }
 
 final class TrackerCreationViewController: UIViewController {
@@ -88,16 +88,16 @@ final class TrackerCreationViewController: UIViewController {
     @objc private func habitButtonPressed() {
         let controller = HabitViewController()
         controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
-        let type = "Привычка"
-        delegate?.didSelectHabbitType(type: type)
-        
-        
+        controller.trackerType = "Habbit"
+//        delegate?.didSelectHabbitType(trackerType: trackerType)
         
         self.present(controller, animated: true, completion: nil)
     }
     
     @objc private func unregularButtonPressed() {
-        let controller = UnregularViewController()
+        let controller = HabitViewController()
+        controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
+        controller.trackerType = "Event"
         
         self.present(controller, animated: true, completion: nil)
     }

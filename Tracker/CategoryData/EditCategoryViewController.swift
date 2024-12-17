@@ -65,6 +65,8 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
         editCategoryName.delegate = self
         
         createView()
+        
+        editCategoryName.text = oldCategoryName
     }
     
     /// Метод создания UI
@@ -114,8 +116,5 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
         guard let newCategoryName = editCategoryName.text else { return }
         delegate?.editNewCategoryName(oldCategoryName: oldCategoryName , newCategoryName: newCategoryName)
         dismiss(animated: true, completion: nil)
-    }
-    
-    
-    
+    } 
 }

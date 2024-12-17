@@ -10,8 +10,10 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     var categoryName:[String] = []
     var visibleTrackersWithCategory: [TrackerCategory] = []
     var visibleTrackers: [Tracker] = []
+    var visibleCategories: [TrackerCategory] = []
     
     let trackerStore = TrackerStore.shared
+    let trackerCategoryStore = TrackerCategoryStore.shared
     let trackerRecordStore = TrackerRecordStore.shared
     
     /// Кнопка выбора даты
@@ -27,7 +29,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     
     ///  Поле поиска
     private lazy var trackerSearchField: UISearchController = {
-        let search = UISearchController()
+        let search = UISearchController(searchResultsController: nil)
         search.searchBar.placeholder = "Поиск"
         search.searchBar.tintColor = .ypBlack
         search.searchResultsUpdater = self
@@ -58,6 +60,28 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         return label
     }()
     
+    /// Картинка для заглушки поиска
+    private lazy var searchPlaceholderImage: UIImageView = {
+        let image = UIImageView()
+        let placeholder = UIImage.searchPlaceholder
+        image.image = placeholder
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.isHidden = true
+        return image
+    }()
+    
+    /// Текст для заглушки поиска
+    private lazy var searchPlaceholderLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Ничего не найдено"
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.textColor = .ypBlack
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
+        return label
+    }()
+    
     /// Коллекшн вью для трекеров
     private lazy var trackerCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -84,20 +108,25 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         super.viewDidLoad()
         setNavigationBar()
         commonTrackerVCConstraint()
-        trackerStore.importCoreDataTracker()
-        mokTrackers()
+//        trackerStore.importCoreDataTracker()
+//        try? trackerCategoryStore.importCategoryFromCoreData()
+        
+        categories = (try? trackerCategoryStore.importCategoryWithTrackersFromCoreData()) ?? []
+        
+//        mokTrackers()
         
         trackerCollectionView.dataSource = self
         trackerCollectionView.delegate = self
         
-        currentTrackersView()
+//        currentTrackersView()
+        currentCategoriesView()
     }
     
     // Моковские трекеры для отладки
     func mokTrackers() {
-        let mokTracker_1 = Tracker(id: UUID(), trackerName: "MOK Tracker_1", trackerColor: .red, trackerEmoji: "😻", trackerShedule: [.wednesday, .sutarday])
-        let mokTracker_2 = Tracker(id: UUID(), trackerName: "MOK Tracker_2", trackerColor: .green, trackerEmoji: "😻", trackerShedule: [.friday])
-        let mokTracker_3 = Tracker(id: UUID(), trackerName: "MOK Tracker_3_long edition for testing", trackerColor: .orange, trackerEmoji: "😻", trackerShedule: [.monday, .sutarday])
+        let mokTracker_1 = Tracker(id: UUID(), trackerName: "MOK Tracker_1", trackerColor: .red, trackerEmoji: "😻", trackerShedule: [.wednesday, .sutarday], trackerType: "Habbit")
+        let mokTracker_2 = Tracker(id: UUID(), trackerName: "MOK Tracker_2", trackerColor: .green, trackerEmoji: "😻", trackerShedule: [.friday], trackerType: "Event")
+        let mokTracker_3 = Tracker(id: UUID(), trackerName: "MOK Tracker_3_long edition for testing", trackerColor: .orange, trackerEmoji: "😻", trackerShedule: [.monday, .sutarday], trackerType: "Habbit")
         trackers.append(mokTracker_1)
         trackers.append(mokTracker_2)
         trackers.append(mokTracker_3)
@@ -131,6 +160,8 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         
         view.addSubview(trackerPlaceholderImage)
         view.addSubview(trackerPlaceholderLabel)
+        view.addSubview(searchPlaceholderImage)
+        view.addSubview(searchPlaceholderLabel)
         view.addSubview(trackerCollectionView)
         
         NSLayoutConstraint.activate([
@@ -142,6 +173,12 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
            
             trackerPlaceholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             trackerPlaceholderLabel.topAnchor.constraint(equalTo: trackerPlaceholderImage.bottomAnchor, constant: 8),
+            
+            searchPlaceholderImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            searchPlaceholderImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+           
+            searchPlaceholderLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            searchPlaceholderLabel.topAnchor.constraint(equalTo: searchPlaceholderImage.bottomAnchor, constant: 8),
            
             trackerCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -171,9 +208,30 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         placeholderVisible()
     }
     
+    
+    private func currentCategoriesView() {
+        let currentDate = pickerDate.date
+        let calendar = Calendar.current
+        var currentWeekDay = calendar.component(.weekday, from: currentDate)
+        currentWeekDay = (currentWeekDay + 5) % 7
+        
+        visibleCategories = []
+        
+        categories.forEach {
+            let visibleTracker = $0.categoryTrackers.filter({$0.trackerShedule.contains(Days.allCases[currentWeekDay])})
+            if !visibleTracker.isEmpty {
+                visibleCategories.append(TrackerCategory(categoryName: $0.categoryName, categoryTrackers: visibleTracker))
+            }
+        }
+        
+        trackerCollectionView.reloadData()
+        placeholderVisible()
+    }
+    
     /// Функция отображения заглушки
     private func placeholderVisible() {
-        let emptyVisibleTrackers: Bool = visibleTrackers.isEmpty
+//        let emptyVisibleTrackers: Bool = visibleTrackers.isEmpty
+        let emptyVisibleTrackers: Bool = visibleCategories.isEmpty
         trackerPlaceholderImage.isHidden = !emptyVisibleTrackers
         trackerPlaceholderLabel.isHidden = !emptyVisibleTrackers
         trackerCollectionView.isHidden = emptyVisibleTrackers
@@ -193,20 +251,23 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
         let formattedDate = dateFormatter.string(from: selectedDate)
         print("Выбранная дата: \(formattedDate)")
-        currentTrackersView()
+//        currentTrackersView()
+        currentCategoriesView()
     }
 }
 
 /// Параметры ячейки и хедера
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return visibleTrackers.count
+//        return visibleTrackers.count
+        return visibleCategories[section].categoryTrackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCellViewController else { return UICollectionViewCell() }
         
-        let tracker = visibleTrackers[indexPath.row]
+//        let tracker = visibleTrackers[indexPath.row]
+        let tracker = visibleCategories[indexPath.section].categoryTrackers[indexPath.row]
         print("ИМЯ ТРЕКЕРА В КОЛЛЕКЦИИ: \(tracker.trackerName)")
         
         let isCompletedToday = trackerRecordStore.importCoreDataRecordComplete(id: tracker.id, trackerDate: currentDate ?? Date())
@@ -236,7 +297,8 @@ extension TrackerViewController: UICollectionViewDataSource {
         }
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerCellSupplementaryView // 6
-        view.titleLabel.text = categories[indexPath.section].categoryName
+//        view.titleLabel.text = categories[indexPath.section].categoryName
+        view.titleLabel.text = visibleCategories[indexPath.section].categoryName
         print("Наименование категории: \(categories[indexPath.section].categoryName)")
         return view
     }
@@ -272,7 +334,8 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+//        return categories.count
+        return visibleCategories.count
     }
     
     func completedTrackersCount(trackerID: UUID) -> Int {
@@ -330,26 +393,48 @@ extension TrackerViewController: TrackerCellDelegate {
 }
 
 extension TrackerViewController: AddNewTrackerViewControllerDelegate {
-    func addTracker() {
-        trackerCollectionView.reloadData()
-        currentTrackersView()
+    func addTracker(category: String, tracker: Tracker) {
+        categories = (try? trackerCategoryStore.importCategoryWithTrackersFromCoreData()) ?? []
+//        currentTrackersView()
+        currentCategoriesView()
         placeholderVisible()
+        trackerCollectionView.reloadData()
     }
 }
 
 extension TrackerViewController: TrackerCreationViewControllerDelegate {
-    func didSelectHabbitType(type: String) {
+    func didSelectHabbitType(trackerType: String) {
         
     }
     
-    func didSelectUnregularType(type: String) {
+    func didSelectUnregularType(trackerType: String) {
         
     }
 }
 
 extension TrackerViewController: UISearchControllerDelegate, UISearchResultsUpdating  {
     func updateSearchResults(for searchController: UISearchController) {
-        print("Метод для поиска")
+        var searchVisibleCategories:[TrackerCategory] = []
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            visibleCategories.forEach {
+                let searchVisibleTracker = $0.categoryTrackers.filter({$0.trackerName.contains(searchText.lowercased())})
+                if !searchVisibleTracker.isEmpty {
+                    searchVisibleCategories.append(TrackerCategory(categoryName: $0.categoryName, categoryTrackers: searchVisibleTracker))
+                    visibleCategories = searchVisibleCategories
+                }
+            }
+                if searchVisibleCategories.isEmpty {
+                    trackerCollectionView.isHidden = true
+                    searchPlaceholderImage.isHidden = false
+                    searchPlaceholderLabel.isHidden = false
+                }
+        } else {
+            trackerCollectionView.isHidden = false
+            searchPlaceholderImage.isHidden = true
+            searchPlaceholderLabel.isHidden = true
+            currentCategoriesView()
+        }
+        trackerCollectionView.reloadData()
     }
 }
 

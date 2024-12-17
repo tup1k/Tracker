@@ -1,5 +1,5 @@
 //
-//  HabitCategoryViewController.swift
+//  CategoryViewController.swift
 //  Tracker
 //
 //  Created by Олег Кор on 09.11.2024.
@@ -11,10 +11,9 @@ protocol CategoryViewControllerDelegate: AnyObject {
     func newCategorySelect(category: String)
 }
 
-
-final class HabitCategoryViewController: UIViewController {
+final class CategoryViewController: UIViewController {
     weak var delegate: CategoryViewControllerDelegate?
-    private var selectedCategory: String?
+//    private var selectedCategory: String?
 //    private var actualCategories: [String] = []
 //    private var actualCategories: [TrackerCategoryCoreData] = []
     private let categoryVC = TrackerViewController()
@@ -33,7 +32,6 @@ final class HabitCategoryViewController: UIViewController {
     /// Таблица с категориями
     private lazy var categoriesTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-//        let tableView = UITableView(frame: view.bounds, style: .insetGrouped)
         tableView.isScrollEnabled = false
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
@@ -85,19 +83,13 @@ final class HabitCategoryViewController: UIViewController {
             view.accessibilityIdentifier = "HabitCategoryVC"
             view.backgroundColor = .ypWhite
             
-//            categoryVC.mokTrackers()
-//            actualCategories = categoryVC.categoryName
-            
             categoriesTableView.dataSource = self
             categoriesTableView.delegate = self
            
+            binding()
             viewModel.loadCategoriesFromCoreData()
-//            viewModel.actualCategories
-//            print(actualCategories)
             createView()
-            bending()
            
-//            categoriesTableView.reloadData()
         }
     
     // Создание UI
@@ -137,11 +129,6 @@ final class HabitCategoryViewController: UIViewController {
             createCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             createCategoryButton.heightAnchor.constraint(equalToConstant: 60),
         ])
-        
-        let isActualCategoriesIsEmpty = viewModel.actualCategories.count > 0
-        categoryPlaceholderImage.isHidden = isActualCategoriesIsEmpty
-        categoryPlaceholderLabel.isHidden = isActualCategoriesIsEmpty
-        categoriesTableView.isHidden = !isActualCategoriesIsEmpty
     }
         
     /// Кнопка открывает окно создание новых категорий
@@ -151,17 +138,33 @@ final class HabitCategoryViewController: UIViewController {
         self.present(controller, animated: true, completion: nil)
     }
     
-    func bending() {
+    func binding() {
         viewModel.didUpdateCategories = { [weak self] in
             guard let self else {return}
-//            categoryPlaceholderImage.isHidden = !viewModel.actualCategories.isEmpty
-//            categoryPlaceholderLabel.isHidden = !viewModel.actualCategories.isEmpty
+            categoryPlaceholderImage.isHidden = !viewModel.actualCategories.isEmpty
+            categoryPlaceholderLabel.isHidden = !viewModel.actualCategories.isEmpty
             categoriesTableView.reloadData()
+        }
+        
+        viewModel.didSelectedRaw = { [weak self] selectedCategory in
+            guard let self else { return }
+            categoriesTableView.visibleCells.enumerated().forEach{ index, cell in
+                if self.viewModel.isSelectedCategory(category: self.viewModel.actualCategories[index]) {
+                    cell.accessoryType = .checkmark
+                } else {
+                    cell.accessoryType = .none
+                }
+            }
+            DispatchQueue.main.async {
+                self.delegate?.newCategorySelect(category: selectedCategory)
+                print("ПОЛЬЗОВАТЕЛЬ ВЫБРАЛ КАТЕГОРИЮ: \(selectedCategory)")
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
 }
 
-extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegate {
+extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.actualCategories.count
     }
@@ -173,15 +176,11 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
         cell.textLabel?.textColor = .ypBlack
         cell.backgroundColor = .ypAppBackground
         cell.selectionStyle = .none
-        cell.accessoryType = (category == selectedCategory) ? .checkmark : .none
-        
-//        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
-        
-//        if indexPath.row == viewModel.actualCategories.count - 1 {
-//            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: CGFloat.greatestFiniteMagnitude)
-//        } else {
-//            cell.separatorInset = .zero
-//        }
+//        cell.layer.cornerRadius = 16
+//        cell.layer.masksToBounds = true
+       
+        cell.accessoryType = (viewModel.isSelectedCategory(category: category)) ? .checkmark : .none
+       
         
         if indexPath.row == viewModel.actualCategories.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
@@ -199,20 +198,7 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let category = viewModel.actualCategories[indexPath.row]
-        if selectedCategory == category {
-            selectedCategory = nil
-        } else {
-            selectedCategory = category
-        }
-        tableView.reloadData()
-        
-        if let newCategory = selectedCategory {
-            delegate?.newCategorySelect(category: newCategory)
-            print("ПОЛЬЗОВАТЕЛЬ ВЫБРАЛ КАТЕГОРИЮ: \(newCategory)")
-        } else { return }
-    
-        dismiss(animated: true, completion: nil)
+        viewModel.didSelectCategory(category: viewModel.actualCategories[indexPath.row])
     }
  
     
@@ -223,7 +209,6 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
             let editAction =
                 UIAction(title: NSLocalizedString("Редактировать", comment: ""),
                          image: UIImage(systemName: "pencil")) { action in
-//                   try? self.viewModel.editCategory(indexPath: indexPath)
                     self.editCategoryName(indexPath: indexPath)
                 }
            
@@ -232,7 +217,6 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
                          image: UIImage(systemName: "trash"),
                          attributes: .destructive) { action in
                     self.deleteCategory(indexPath: indexPath)
-//                    self.viewModel.deleteCategory(category)
                 }
             return UIMenu(title: "", children: [editAction, deleteAction])
         })
@@ -266,15 +250,14 @@ extension HabitCategoryViewController: UITableViewDataSource, UITableViewDelegat
     
 }
 
-extension HabitCategoryViewController: NewCategoryViewControllerDelegate {
+extension CategoryViewController: NewCategoryViewControllerDelegate {
     func createNewCategoryName(categoryName: String) {
         viewModel.addCategory(categoryName: categoryName)
-//        self.actualCategories = viewModel.actualCategories
         categoriesTableView.reloadData()
     }
 }
 
-extension HabitCategoryViewController: EditCategoryViewControllerDelegate {
+extension CategoryViewController: EditCategoryViewControllerDelegate {
     func editNewCategoryName(oldCategoryName: String, newCategoryName: String) {
         try? viewModel.editCategory(categoryName: oldCategoryName, newCategoryName: newCategoryName)
         categoriesTableView.reloadData()

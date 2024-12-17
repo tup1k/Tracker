@@ -16,21 +16,29 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     private var fetchedResultController: NSFetchedResultsController<TrackerCoreData>?
     
     /// Функция записи параметров нового трекера в CoreData
-    func saveTrackerToCoreData(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days]) {
-        let trackerCoreDataEntity = TrackerCoreData(context: context)
-        let stringTrackerSchedule = CoreDataScheduleTransformer.shared.daysToString(days: trackerShedule)
+//    func saveTrackerToCoreData(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days], trackerType: String) {
+    func saveTrackerToCoreData(tracker: Tracker, categoryName: String) {
         
-        trackerCoreDataEntity.id = id
-        trackerCoreDataEntity.trackerName = trackerName
-        trackerCoreDataEntity.trackerColor = trackerColor.toHexString()
-        trackerCoreDataEntity.trackerEmoji = trackerEmoji
+        let trackerCoreDataEntity = TrackerCoreData(context: context)
+        let trackerCategoryCoreData = try? getCoreDataFromCategory(categoryName: categoryName)
+        let stringTrackerSchedule = CoreDataScheduleTransformer.shared.daysToString(days: tracker.trackerShedule)
+        
+        trackerCoreDataEntity.id = tracker.id
+        trackerCoreDataEntity.trackerName = tracker.trackerName
+        trackerCoreDataEntity.trackerColor = tracker.trackerColor.toHexString()
+        trackerCoreDataEntity.trackerEmoji = tracker.trackerEmoji
         trackerCoreDataEntity.trackerShedule = stringTrackerSchedule
+        trackerCoreDataEntity.trackerType = tracker.trackerType
+        
+        trackerCoreDataEntity.categoryLink = trackerCategoryCoreData
+        trackerCategoryCoreData?.addToTrackersInCategory(trackerCoreDataEntity)
+//        trackerCategoryCoreData?.trackersInCategory = trackerCoreDataEntity
         
         do {
             try context.save()
-            print("ТРЕКЕР С НОМЕРОМ \(id) И ИМЕНЕМ \(trackerName) ЗАГРУЖЕН В CORE DATA.")
+            print("ТРЕКЕР С НОМЕРОМ \(tracker.id), ИМЕНЕМ \(tracker.trackerName), КАТЕГОРИЕЙ \(categoryName) ЗАГРУЖЕН В CORE DATA.")
         } catch {
-            print("ОШИБКА СОХРАНЕНИЯ ТРЕКЕРА С НОМЕРОМ \(id) И ИМЕНЕМ \(trackerName) В CORE DATA: \(error.localizedDescription)")
+            print("ОШИБКА СОХРАНЕНИЯ ТРЕКЕРА С НОМЕРОМ \(tracker.id), ИМЕНЕМ \(tracker.trackerName), КАТЕГОРИЕЙ \(categoryName) В CORE DATA: \(error.localizedDescription)")
         }
         
     }
@@ -55,4 +63,19 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         
        return fetchedResultController?.fetchedObjects ?? []
     }
+    
+    
+    
+    private func getCoreDataFromCategory(categoryName: String) throws -> TrackerCategoryCoreData  {
+            
+        let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "categoryName == %@", categoryName)
+            
+            guard let trackerCategoryCoreData = try? context.fetch(fetchRequest).first else {
+                let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+                trackerCategoryCoreData.categoryName = categoryName
+                return trackerCategoryCoreData
+            }
+            return trackerCategoryCoreData
+        }
 }

@@ -15,6 +15,33 @@ final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     private var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private var fetchedResultController: NSFetchedResultsController<TrackerCategoryCoreData>?
     
+    func importCategoryWithTrackersFromCoreData() throws -> [TrackerCategory] {
+        let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        var resultCategories = [TrackerCategory]()
+        let categories = try context.fetch(fetchRequest)
+        
+        
+        for category in categories {
+            guard let name = category.categoryName, let trackersCoreData = category.trackersInCategory as? Set<TrackerCoreData> else { continue }
+        
+            let trackers = trackersCoreData.compactMap({ (trackerCoreData: TrackerCoreData) -> Tracker? in
+                guard
+                    let id = trackerCoreData.id,
+                    let name = trackerCoreData.trackerName,
+                    let color = UIColor.init(hex: trackerCoreData.trackerColor ?? ""),
+                    let emoji = trackerCoreData.trackerEmoji,
+                    let type = trackerCoreData.trackerType
+                else { return nil }
+                
+                let schedule = CoreDataScheduleTransformer.shared.stringToDays(stringDays: trackerCoreData.trackerShedule ?? "")
+                return Tracker(id: id, trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: type)
+            })
+            resultCategories.append(TrackerCategory(categoryName: name, categoryTrackers: trackers))
+        }
+        return resultCategories
+    }
+    
+    
     /// Метод сохранения категорий в CoreData
     func saveCategoryToCoreData(categoryName: String) {
         
@@ -63,26 +90,9 @@ final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     func importCategoryFromCoreData() throws -> [String] {
         
         let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "categoryName", ascending: true)]
-//        
-//        fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest,
-//                                                             managedObjectContext: context,
-//                                                             sectionNameKeyPath: nil,
-//                                                             cacheName: nil)
-//        fetchedResultController?.delegate = self
         
         let categories = try context.fetch(fetchRequest)
-        
-        
-//        do {
-//            try fetchedResultController?.performFetch()
-//            print("ВЫПОЛНЕНА ПОДГРУЗКА СПИСКА КАТЕГОРИЙ ИЗ CORE DATA")
-//        } catch {
-//            print("ОШИБКА ВЫЗОВА fetchedResultController ПРИ ЗАГРУЗКЕ СПИСКА КАТЕГОРИЙ: \(error.localizedDescription)")
-//        }
-        
-//        return fetchedResultController?.fetchedObjects ?? []
+
         return categories.compactMap({$0.categoryName})
     }
-    
 }
