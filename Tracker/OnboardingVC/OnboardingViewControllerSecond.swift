@@ -81,6 +81,11 @@ final class OnboardingViewControllerSecond: UIViewController {
         let controller = TabBarController()
         controller.modalPresentationStyle = .fullScreen
         self.present(controller, animated: true, completion: nil)
+        
+        if let window = UIApplication.shared.windows.first {
+            let initialViewController = TabBarController()
+            window.rootViewController = initialViewController
+        }
     }
 }
 

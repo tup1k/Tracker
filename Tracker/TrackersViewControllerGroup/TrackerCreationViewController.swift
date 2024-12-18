@@ -89,8 +89,6 @@ final class TrackerCreationViewController: UIViewController {
         let controller = HabitViewController()
         controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
         controller.trackerType = "Habbit"
-//        delegate?.didSelectHabbitType(trackerType: trackerType)
-        
         self.present(controller, animated: true, completion: nil)
     }
     
@@ -98,7 +96,6 @@ final class TrackerCreationViewController: UIViewController {
         let controller = HabitViewController()
         controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
         controller.trackerType = "Event"
-        
         self.present(controller, animated: true, completion: nil)
     }
     

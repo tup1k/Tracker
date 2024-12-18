@@ -13,9 +13,7 @@ protocol CategoryViewControllerDelegate: AnyObject {
 
 final class CategoryViewController: UIViewController {
     weak var delegate: CategoryViewControllerDelegate?
-//    private var selectedCategory: String?
-//    private var actualCategories: [String] = []
-//    private var actualCategories: [TrackerCategoryCoreData] = []
+
     private let categoryVC = TrackerViewController()
     private let viewModel = CategoryViewModel()
     private let trackerCategoryStore = TrackerCategoryStore.shared
@@ -31,16 +29,16 @@ final class CategoryViewController: UIViewController {
     
     /// Таблица с категориями
     private lazy var categoriesTableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
+        let tableView = UITableView(frame: view.bounds, style: .insetGrouped)
         tableView.isScrollEnabled = false
-        tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
+        tableView.layer.cornerRadius = 16
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .singleLine
         tableView.separatorInset.left = 16
         tableView.separatorInset.right = 16
         tableView.separatorColor = .ypBlack
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryCell")
+        tableView.register(CategoryListCell.self, forCellReuseIdentifier: CategoryListCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -97,12 +95,10 @@ final class CategoryViewController: UIViewController {
         view.addSubview(categoryTitle)
         view.addSubview(categoriesTableView)
         view.addSubview(categoryPlaceholderImage)
-        categoryPlaceholderImage.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addSubview(categoryPlaceholderLabel)
-        categoryPlaceholderLabel.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addSubview(createCategoryButton)
+        categoryPlaceholderImage.translatesAutoresizingMaskIntoConstraints = false
+        categoryPlaceholderLabel.translatesAutoresizingMaskIntoConstraints = false
         createCategoryButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -119,9 +115,9 @@ final class CategoryViewController: UIViewController {
             
             categoriesTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             categoriesTableView.topAnchor.constraint(equalTo: categoryTitle.bottomAnchor, constant: 24),
-            categoriesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            categoriesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            categoriesTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            categoriesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            categoriesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            categoriesTableView.bottomAnchor.constraint(equalTo: createCategoryButton.topAnchor, constant: -16),
             
             createCategoryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             createCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
@@ -170,25 +166,13 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryListCell.identifier, for: indexPath) as? CategoryListCell else { fatalError() }
         let category = viewModel.actualCategories[indexPath.row]
         cell.textLabel?.text = category
         cell.textLabel?.textColor = .ypBlack
         cell.backgroundColor = .ypAppBackground
         cell.selectionStyle = .none
-//        cell.layer.cornerRadius = 16
-//        cell.layer.masksToBounds = true
-       
         cell.accessoryType = (viewModel.isSelectedCategory(category: category)) ? .checkmark : .none
-       
-        
-        if indexPath.row == viewModel.actualCategories.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-            cell.layoutMargins = .zero
-        } else {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-            cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        }
         
         return cell
     }
@@ -201,9 +185,7 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
         viewModel.didSelectCategory(category: viewModel.actualCategories[indexPath.row])
     }
  
-    
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-//        guard indexPath.row != 0 else {return nil}
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { action in
             let editAction =
@@ -247,7 +229,6 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
         alert.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
-    
 }
 
 extension CategoryViewController: NewCategoryViewControllerDelegate {

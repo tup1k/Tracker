@@ -62,6 +62,9 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
         view.accessibilityIdentifier = "NewCategoryVC"
         view.backgroundColor = .ypWhite
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(keyboardSwitchOff))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
         newCategoryName.delegate = self
         
         createView()
@@ -92,9 +95,12 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
         ])
     }
     
-    
     @objc private func editCategoryName(_ sender: UITextField) {
         blockButtons()
+    }
+    
+    @objc private func keyboardSwitchOff() {
+        view.endEditing(true)
     }
     
     /// Функция блокировки кнопок создания трекера в случае если поля не заполнены

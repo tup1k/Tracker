@@ -15,11 +15,11 @@ final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     private var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private var fetchedResultController: NSFetchedResultsController<TrackerCategoryCoreData>?
     
+    /// Метод выгрузки трекеров с категорий
     func importCategoryWithTrackersFromCoreData() throws -> [TrackerCategory] {
         let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         var resultCategories = [TrackerCategory]()
         let categories = try context.fetch(fetchRequest)
-        
         
         for category in categories {
             guard let name = category.categoryName, let trackersCoreData = category.trackersInCategory as? Set<TrackerCoreData> else { continue }
@@ -40,7 +40,6 @@ final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         }
         return resultCategories
     }
-    
     
     /// Метод сохранения категорий в CoreData
     func saveCategoryToCoreData(categoryName: String) {

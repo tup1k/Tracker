@@ -23,7 +23,6 @@ final class CategoryViewModel {
         }
     }
 
-//    var actualCategories: [TrackerCategoryCoreData] = []
     private var trackerStore = TrackerStore.shared
     private var trackerCategoryStore = TrackerCategoryStore.shared
     
@@ -66,8 +65,5 @@ final class CategoryViewModel {
     
     func didSelectCategory(category: String) {
         selectedCategory = category
-    }
-    
-   
-    
+    } 
 }

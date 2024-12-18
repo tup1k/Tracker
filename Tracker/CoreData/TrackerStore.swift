@@ -16,7 +16,6 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     private var fetchedResultController: NSFetchedResultsController<TrackerCoreData>?
     
     /// Функция записи параметров нового трекера в CoreData
-//    func saveTrackerToCoreData(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days], trackerType: String) {
     func saveTrackerToCoreData(tracker: Tracker, categoryName: String) {
         
         let trackerCoreDataEntity = TrackerCoreData(context: context)
@@ -32,7 +31,6 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         
         trackerCoreDataEntity.categoryLink = trackerCategoryCoreData
         trackerCategoryCoreData?.addToTrackersInCategory(trackerCoreDataEntity)
-//        trackerCategoryCoreData?.trackersInCategory = trackerCoreDataEntity
         
         do {
             try context.save()
@@ -40,7 +38,6 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         } catch {
             print("ОШИБКА СОХРАНЕНИЯ ТРЕКЕРА С НОМЕРОМ \(tracker.id), ИМЕНЕМ \(tracker.trackerName), КАТЕГОРИЕЙ \(categoryName) В CORE DATA: \(error.localizedDescription)")
         }
-        
     }
     
     /// Функция выгрузки параметров сохраненного в CoreData трекера
@@ -60,12 +57,10 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         } catch {
             print("ОШИБКА ВЫЗОВА fetchedResultController: \(error.localizedDescription)")
         }
-        
        return fetchedResultController?.fetchedObjects ?? []
     }
     
-    
-    
+    /// Метод вызова названия категории из CoreData
     private func getCoreDataFromCategory(categoryName: String) throws -> TrackerCategoryCoreData  {
             
         let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()

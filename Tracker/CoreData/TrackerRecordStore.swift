@@ -83,6 +83,5 @@ final class TrackerRecordStore: NSObject {
             return false
         }
     }
-    
 }
 

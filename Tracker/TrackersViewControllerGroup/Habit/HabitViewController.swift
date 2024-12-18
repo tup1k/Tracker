@@ -165,8 +165,6 @@ final class HabitViewController: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
         habbitName.delegate = self
-        
-       
       }
 
     /// Метод создания UI
@@ -256,10 +254,10 @@ final class HabitViewController: UIViewController {
         guard let emoji = selectedEmoji else { return }
         guard let category = selectedCategory else { return }
 
-        
         if trackerType == "Event" {
-            schedule = Days.allCases
+            eventDateSetup()
         }
+        
         let newTracker = Tracker(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: trackerType)
         trackerStore.saveTrackerToCoreData(tracker: newTracker, categoryName: category)
         
@@ -271,6 +269,15 @@ final class HabitViewController: UIViewController {
     
     @objc private func newTrackerName(_ sender: UITextField) {
         blockButtons()
+    }
+    
+    private func eventDateSetup() {
+        schedule = []
+        let currentDate = Date()
+        let calendar = Calendar.current
+        var currentWeekDay = calendar.component(.weekday, from: currentDate)
+        currentWeekDay = (currentWeekDay + 5) % 7
+        schedule.append(Days.allCases[currentWeekDay])
     }
     
     /// Функция блокировки кнопок создания трекера в случае если поля не заполнены
@@ -354,7 +361,6 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
             cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
-        
         return cell
     }
     
@@ -420,7 +426,6 @@ extension HabitViewController: UICollectionViewDataSource {
         if indexPath.section == 0 {
             let emoji = trackerEmoji.trackerEmoji[indexPath.item]
             habbitCell.collectionLable.text = emoji
-            
             
             if selectedEmojiIndex == indexPath {
                 habbitCell.contentView.backgroundColor = .ypEmojiGray

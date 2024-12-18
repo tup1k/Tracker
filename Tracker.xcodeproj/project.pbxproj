@@ -37,6 +37,7 @@
 		84CACBFD2D078364003E489C /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACBFC2D078364003E489C /* NewCategoryViewController.swift */; };
 		84CACC012D0CC143003E489C /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACC002D0CC143003E489C /* CategoryViewModel.swift */; };
 		84CACC032D0CC570003E489C /* EditCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACC022D0CC570003E489C /* EditCategoryViewController.swift */; };
+		84CACC052D136DFE003E489C /* CategoryListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACC042D136DFD003E489C /* CategoryListCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,7 @@
 		84CACBFC2D078364003E489C /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 		84CACC002D0CC143003E489C /* CategoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 		84CACC022D0CC570003E489C /* EditCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryViewController.swift; sourceTree = "<group>"; };
+		84CACC042D136DFD003E489C /* CategoryListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 		84374D952CDFC98F0062B10E /* CategoryData */ = {
 			isa = PBXGroup;
 			children = (
+				84CACC042D136DFD003E489C /* CategoryListCell.swift */,
 				84CACC002D0CC143003E489C /* CategoryViewModel.swift */,
 				84374D932CDFC9850062B10E /* CategoryViewController.swift */,
 				84CACBFC2D078364003E489C /* NewCategoryViewController.swift */,
@@ -298,6 +301,7 @@
 				84374D9F2CE27F230062B10E /* TrackerStructuresFile.swift in Sources */,
 				840FDD242CCE9E08006A71E3 /* StatisticViewController.swift in Sources */,
 				84374D9D2CE0FA3F0062B10E /* TrackerCellSupplementaryView.swift in Sources */,
+				84CACC052D136DFE003E489C /* CategoryListCell.swift in Sources */,
 				84374DA12CE29F470062B10E /* TrackerCellSupplemantaryCollection.swift in Sources */,
 				84374DA32CE68F340062B10E /* HabbitCellSupplementaryView.swift in Sources */,
 				840FDD0E2CCE410B006A71E3 /* SceneDelegate.swift in Sources */,
