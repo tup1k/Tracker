@@ -14,13 +14,15 @@ class Tracker {
     let trackerColor: UIColor
     let trackerEmoji: String
     let trackerShedule: [Days]
+    let trackerType: String
     
-    init(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days]) {
+    init(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days], trackerType: String) {
         self.id = id
         self.trackerName = trackerName
         self.trackerColor = trackerColor
         self.trackerEmoji = trackerEmoji
         self.trackerShedule = trackerShedule
+        self.trackerType = trackerType
     }
     
     convenience init(from trackersFromCoreData: TrackerCoreData) {
@@ -33,7 +35,8 @@ class Tracker {
             trackerName: trackersFromCoreData.trackerName ?? "",
             trackerColor: trackerUIColor,
             trackerEmoji: trackersFromCoreData.trackerEmoji ?? "",
-            trackerShedule: trackerCoreDataSchedule
+            trackerShedule: trackerCoreDataSchedule,
+            trackerType: trackersFromCoreData.trackerType ?? ""
         )
     }
 }
