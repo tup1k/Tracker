@@ -47,7 +47,7 @@ final class HabitScheduleViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "createScheduleButton"
         button.layer.cornerRadius = 16

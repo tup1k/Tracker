@@ -8,8 +8,8 @@
 import UIKit
 
 protocol TrackerCreationViewControllerDelegate: AnyObject {
-    func didSelectHabbitType(type: String)
-    func didSelectUnregularType(type: String)
+    func didSelectHabbitType(trackerType: String)
+    func didSelectUnregularType(trackerType: String)
 }
 
 final class TrackerCreationViewController: UIViewController {
@@ -21,6 +21,7 @@ final class TrackerCreationViewController: UIViewController {
         let label = UILabel()
         label.text = "Создание трекера"
         label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.textColor = .ypBlack
         return label
     }()
     
@@ -31,6 +32,7 @@ final class TrackerCreationViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .ypBlack
+        button.setTitleColor(.ypWhite, for: .normal)
         button.accessibilityIdentifier = "habitButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(habitButtonPressed), for: .touchUpInside)
@@ -45,6 +47,7 @@ final class TrackerCreationViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .ypBlack
+        button.setTitleColor(.ypWhite, for: .normal)
         button.accessibilityIdentifier = "unregularButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(unregularButtonPressed), for: .touchUpInside)
@@ -67,7 +70,7 @@ final class TrackerCreationViewController: UIViewController {
         }
         
         view.accessibilityIdentifier = "TrackerCreationVC"
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         NSLayoutConstraint.activate([
             viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
@@ -88,15 +91,14 @@ final class TrackerCreationViewController: UIViewController {
     @objc private func habitButtonPressed() {
         let controller = HabitViewController()
         controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
-        let type = "Привычка"
-        delegate?.didSelectHabbitType(type: type)
-        
+        controller.trackerType = "Habbit"
         self.present(controller, animated: true, completion: nil)
     }
     
     @objc private func unregularButtonPressed() {
-        let controller = UnregularViewController()
-        
+        let controller = HabitViewController()
+        controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
+        controller.trackerType = "Event"
         self.present(controller, animated: true, completion: nil)
     }
     
