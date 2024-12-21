@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CategoryViewControllerDelegate: AnyObject {
-    func newCategorySelect(category: String)
+    func selectNewCategory(category: String)
 }
 
 final class CategoryViewController: UIViewController {
@@ -68,7 +68,7 @@ final class CategoryViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Добавить категорию", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
         button.accessibilityIdentifier = "createCategoruButton"
         button.layer.cornerRadius = 16
@@ -152,7 +152,7 @@ final class CategoryViewController: UIViewController {
                 }
             }
             DispatchQueue.main.async {
-                self.delegate?.newCategorySelect(category: selectedCategory)
+                self.delegate?.selectNewCategory(category: selectedCategory)
                 print("ПОЛЬЗОВАТЕЛЬ ВЫБРАЛ КАТЕГОРИЮ: \(selectedCategory)")
                 self.dismiss(animated: true, completion: nil)
             }

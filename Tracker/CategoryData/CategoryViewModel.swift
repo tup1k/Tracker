@@ -6,8 +6,6 @@
 //
 
 final class CategoryViewModel {
-    static let shared = CategoryViewModel()
-//    private init() {}
     var didUpdateCategories: (() -> Void)?
     var didSelectedRaw: ((String) -> Void)?
     private(set) var actualCategories: [String] = [] {

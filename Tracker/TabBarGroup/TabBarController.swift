@@ -28,7 +28,7 @@ final class TabBarController: UITabBarController {
         self.viewControllers = [trackerViewController, statisticViewController]
         
         let lineLayer = CALayer()
-        lineLayer.backgroundColor = UIColor.ypGray.cgColor
+        lineLayer.backgroundColor = UIColor.ypTBGray.cgColor
         lineLayer.frame = CGRect(x: 0, y: 0, width: self.tabBar.bounds.width, height: 1)
         self.tabBar.layer.addSublayer(lineLayer)
     }

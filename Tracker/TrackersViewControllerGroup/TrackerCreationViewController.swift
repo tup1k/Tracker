@@ -21,6 +21,7 @@ final class TrackerCreationViewController: UIViewController {
         let label = UILabel()
         label.text = "Создание трекера"
         label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.textColor = .ypBlack
         return label
     }()
     
@@ -31,6 +32,7 @@ final class TrackerCreationViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .ypBlack
+        button.setTitleColor(.ypWhite, for: .normal)
         button.accessibilityIdentifier = "habitButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(habitButtonPressed), for: .touchUpInside)
@@ -45,6 +47,7 @@ final class TrackerCreationViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .ypBlack
+        button.setTitleColor(.ypWhite, for: .normal)
         button.accessibilityIdentifier = "unregularButton"
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(unregularButtonPressed), for: .touchUpInside)
@@ -67,7 +70,7 @@ final class TrackerCreationViewController: UIViewController {
         }
         
         view.accessibilityIdentifier = "TrackerCreationVC"
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         NSLayoutConstraint.activate([
             viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),

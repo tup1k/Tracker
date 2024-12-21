@@ -16,7 +16,7 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
     var oldCategoryName: String = ""
     
     /// Заголовок окна создания новой категории
-    private lazy var  editCategoryTitle: UILabel = {
+    private lazy var editCategoryTitle: UILabel = {
         let label = UILabel()
         label.text = "Редактирование категории"
         label.font = .systemFont(ofSize: 16, weight: .regular)
@@ -47,7 +47,7 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
         button.accessibilityIdentifier = "newCategoryCreate"
         button.layer.cornerRadius = 16
@@ -73,7 +73,6 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
     
     /// Метод создания UI
     private func createView() {
-        
         view.addSubview(editCategoryTitle)
         view.addSubview(editCategoryName)
         view.addSubview(editCategoryCreate)
@@ -95,7 +94,6 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
             editCategoryCreate.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
-    
     
     @objc private func editCategoryName(_ sender: UITextField) {
         blockButtons()

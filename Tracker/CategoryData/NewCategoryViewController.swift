@@ -12,7 +12,6 @@ protocol NewCategoryViewControllerDelegate: AnyObject {
 }
 
 final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
-    
     weak var delegate: NewCategoryViewControllerDelegate?
     
     /// Заголовок окна создания новой категории
@@ -47,7 +46,7 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
         button.accessibilityIdentifier = "newCategoryCreate"
         button.layer.cornerRadius = 16

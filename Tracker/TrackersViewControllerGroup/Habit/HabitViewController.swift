@@ -124,7 +124,7 @@ final class HabitViewController: UIViewController {
         let button = UIButton(type: .custom)
         button.setTitle("Отменить", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.red, for: .normal)
+        button.setTitleColor(.ypRed, for: .normal)
         button.backgroundColor = .ypWhite
         button.tintColor = .ypRed
         button.layer.borderWidth = 1
@@ -142,7 +142,7 @@ final class HabitViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Создать", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
         button.accessibilityIdentifier = "habbitTrackerCreate"
         button.layer.cornerRadius = 16
@@ -193,11 +193,7 @@ final class HabitViewController: UIViewController {
         habbitContentView.addSubview(habbitButtonsStack)
         habbitButtonsStack.translatesAutoresizingMaskIntoConstraints = false
   
-        if trackerType == "Event" {
-            tableViewHeight = 75
-        } else {
-            tableViewHeight = 150
-        }
+        tableViewHeight = trackerType == "Event" ? 75 : 150
         
         NSLayoutConstraint.activate([
             viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
@@ -284,14 +280,14 @@ final class HabitViewController: UIViewController {
     private func blockButtons() {
         guard let trackerName = habbitName.text else { return }
         
-        if trackerType == "Habbit" && trackerName.isEmpty == false &&
+        if trackerType == "Habbit" && !trackerName.isEmpty  &&
             selectedCategory != nil && selectedCategory != "" &&
             selectedSchedule != nil && selectedSchedule != "" &&
             selectedEmoji != "" && selectedColor != nil &&
             trackerName.count < 38 {
             habbitTrackerCreate.isEnabled = true
             habbitTrackerCreate.backgroundColor = .ypBlack
-        } else if trackerType == "Event" && trackerName.isEmpty == false &&
+        } else if trackerType == "Event" && !trackerName.isEmpty &&
                     selectedCategory != nil && selectedCategory != "" &&
                     selectedEmoji != "" && selectedColor != nil &&
                     trackerName.count < 38 {
@@ -316,11 +312,7 @@ final class HabitViewController: UIViewController {
 
 extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if trackerType == "Habbit" {
-            return 2
-        } else {
-            return 1
-        }
+        return trackerType == "Habbit" ? 2 : 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -528,7 +520,7 @@ extension HabitViewController: ScheduleViewControllerDelegate {
 }
 
 extension HabitViewController: CategoryViewControllerDelegate {
-    func newCategorySelect(category: String) {
+    func selectNewCategory(category: String) {
         self.selectedCategory = category
         blockButtons()
         habbitPropertiesTableView.reloadData()

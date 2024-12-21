@@ -8,6 +8,7 @@
 import UIKit
 
 final class OnboardingViewControllerOne: UIViewController {
+    private let userDefaults: UserDefaults = .standard
     
     private lazy var onboardingScreen: UIImageView = {
         let image = UIImageView()
@@ -22,7 +23,7 @@ final class OnboardingViewControllerOne: UIViewController {
         let label = UILabel()
         label.text = "Отслеживайте только \nто, что хотите"
         label.font = .systemFont(ofSize: 32, weight: .bold)
-        
+        label.textColor = .black
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
@@ -35,7 +36,7 @@ final class OnboardingViewControllerOne: UIViewController {
         button.setTitle("Вот это технологии!", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .ypBlack
+        button.backgroundColor = .black
         button.accessibilityIdentifier = "onboardingButtonOne"
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
@@ -83,6 +84,7 @@ final class OnboardingViewControllerOne: UIViewController {
         let controller = TabBarController()
         controller.modalPresentationStyle = .fullScreen
         self.present(controller, animated: true, completion: nil)
+        userDefaults.setValue(true, forKey: "notFirstStart")
         
         if let window = UIApplication.shared.windows.first {
             let initialViewController = TabBarController()

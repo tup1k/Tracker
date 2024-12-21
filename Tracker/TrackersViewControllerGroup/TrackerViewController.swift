@@ -93,6 +93,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         collectionView.register(TrackerCellViewController.self, forCellWithReuseIdentifier: "trackerCell")
         collectionView.register(TrackerCellSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .ypWhite
         return collectionView
     }()
     
@@ -229,6 +230,8 @@ extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCellViewController else { return UICollectionViewCell() }
         
+        cell.backgroundColor = .ypWhite
+        
         let tracker = visibleCategories[indexPath.section].categoryTrackers[indexPath.row]
         print("ИМЯ ТРЕКЕРА В КОЛЛЕКЦИИ: \(tracker.trackerName)")
         
@@ -314,20 +317,20 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
             UIAction(title: NSLocalizedString("Закрепить", comment: ""),
                      image: UIImage(systemName: "pin")) { action in
                 
-                // TO DO
+                // TODO: Доделать
             }
             
             let editTracker =
             UIAction(title: NSLocalizedString("Редактировать", comment: ""),
                      image: UIImage(systemName: "pencil")) { action in
-                // TO DO
+                // TODO: Доделать
             }
             
             let deleteAction =
             UIAction(title: NSLocalizedString("Удалить", comment: ""),
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
-                // TO DO
+                // TODO: Доделать
             }
             
             return UIMenu(title: "", children: [pinTracker, editTracker, deleteAction])
