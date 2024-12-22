@@ -30,7 +30,8 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     ///  Поле поиска
     private lazy var trackerSearchField: UISearchController = {
         let search = UISearchController(searchResultsController: nil)
-        search.searchBar.placeholder = "Поиск"
+        let localizedFindTrackerPlaceholder = NSLocalizedString("findTrackerPlaceholder", comment: "")
+        search.searchBar.placeholder = localizedFindTrackerPlaceholder
         search.searchBar.tintColor = .ypBlack
         search.searchResultsUpdater = self
         search.delegate = self
@@ -52,7 +53,8 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     /// Текст для заглушки
     private lazy var trackerPlaceholderLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        let localizedTrackerPlaceholderTitle = NSLocalizedString("trackerPlaceholder", comment: "")
+        label.text = localizedTrackerPlaceholderTitle
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
         label.textAlignment = .center
@@ -73,7 +75,8 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     /// Текст для заглушки поиска
     private lazy var searchPlaceholderLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ничего не найдено"
+        let localizedSearchPlaceholderLabel = NSLocalizedString("searchPlaceholderLabel", comment: "")
+        label.text = localizedSearchPlaceholderLabel
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
         label.textAlignment = .center
@@ -101,6 +104,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         let selectedDate = pickerDate.date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
+        dateFormatter.locale = Locale.current
         let formattedDate = dateFormatter.string(from: selectedDate)
         return dateFormatter.date(from: formattedDate) ?? Date()
     }
@@ -124,6 +128,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
  
     /// Настройки навибара
     private func setNavigationBar() {
+        let localizedTrackerTitle = NSLocalizedString("trackersAppTitle", comment: "")
         let naviBarLeftButton = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .done, target: self, action: #selector(plusButtonPressed))
         naviBarLeftButton.tintColor = .ypBlack
         self.navigationItem.leftBarButtonItem = naviBarLeftButton
@@ -131,7 +136,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         let naviBarRightButton = UIBarButtonItem(customView: pickerDate)
         self.navigationItem.rightBarButtonItem = naviBarRightButton
         
-        self.navigationItem.title = "Трекеры"
+        self.navigationItem.title = localizedTrackerTitle
         navigationController?.navigationBar.prefersLargeTitles = true
         
         self.navigationItem.searchController = trackerSearchField
@@ -312,22 +317,25 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         
         let indexPath = indexPaths[0]
         return UIContextMenuConfiguration(actionProvider: { actions in
+            let localizedContextMenuPin = NSLocalizedString("contextMenuPin", comment: "")
+            let localizedContextMenuEdit = NSLocalizedString("contextMenuEdit", comment: "")
+            let localizedContextMenuDelete = NSLocalizedString("contextMenuDelete", comment: "")
             
             let pinTracker =
-            UIAction(title: NSLocalizedString("Закрепить", comment: ""),
+            UIAction(title: localizedContextMenuPin,
                      image: UIImage(systemName: "pin")) { action in
                 
                 // TODO: Доделать
             }
             
             let editTracker =
-            UIAction(title: NSLocalizedString("Редактировать", comment: ""),
+            UIAction(title: localizedContextMenuEdit,
                      image: UIImage(systemName: "pencil")) { action in
                 // TODO: Доделать
             }
             
             let deleteAction =
-            UIAction(title: NSLocalizedString("Удалить", comment: ""),
+            UIAction(title: localizedContextMenuDelete,
                      image: UIImage(systemName: "trash"),
                      attributes: .destructive) { action in
                 // TODO: Доделать

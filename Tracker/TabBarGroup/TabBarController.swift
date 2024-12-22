@@ -15,13 +15,16 @@ final class TabBarController: UITabBarController {
     
     /// Настройки таббара
     private func tabBarSetup() {
+        let localizedTrackerTitle = NSLocalizedString("trackersAppTitle", comment: "")
+        let localizedStatisticTitle = NSLocalizedString("statisticAppTitle", comment: "")
+        
         let trackerViewController = UINavigationController(rootViewController: TrackerViewController())
-        trackerViewController.tabBarItem = UITabBarItem(title: "Трекеры",
+        trackerViewController.tabBarItem = UITabBarItem(title: localizedTrackerTitle,
                                                         image: UIImage(named: "TrackerTabImage"),
                                                         selectedImage: nil)
         
         let statisticViewController = UINavigationController(rootViewController: StatisticViewController())
-        statisticViewController.tabBarItem = UITabBarItem(title: "Статистика",
+        statisticViewController.tabBarItem = UITabBarItem(title: localizedStatisticTitle,
                                                         image: UIImage(named: "StatisticTabImage"),
                                                         selectedImage: nil)
         

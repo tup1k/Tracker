@@ -1,0 +1,67 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Олег Кор on 21.12.2024.
+  
+*/
+"onboardingTitleOne" = "Отслеживайте только \nто, что хотите";
+"onboardingTitleTwo" = "Даже если это\nне литры воды и йога";
+"onboardingButton" = "Вот это технологии!";
+
+"trackersAppTitle" = "Трекеры";
+"statisticAppTitle" = "Статистика";
+
+"findTrackerPlaceholder" = "Поиск";
+"searchPlaceholderLabel" = "Ничего не найдено";
+"trackerPlaceholder" = "Что будем отслеживать?";
+"typeOfTrackerTitle" = "Создание трекера";
+"contextMenuPin" = "Закрепить";
+"contextMenuEdit" = "Редактировать";
+"contextMenuDelete" = "Удалить";
+
+"habitTypeButton" = "Привычка";
+"eventTypeButton" = "Нерегулярное событие";
+
+"newHabitTitle" = "Новая привычка";
+"newEventTitle" = "Новое нерегулярное событие";
+"trackerCreatePlaceholder" = "Введите название трекера";
+"trackerNameLimit" = "Ограничение 38 символов";
+"colorCollectionTitle" = "Цвет";
+"categoryName" = "Категория";
+"scheduleName" = "Расписание";
+"categoryPlaceholder" = "Привычки и события можно \nобъединить по смыслу";
+"createButton" = "Создать";
+"cancelButton" = "Отменить";
+"addCategoryButton" = "Добавить категорию";
+"contextDeleteQuestion" = "Эта категория точне не нужна?";
+"deleteButton" = "Удалить";
+"newCategoryTitle" = "Новая категория";
+"newCategoryPlaceholder" = "Введите название категории";
+"newCategoryCreate" = "Готово";
+"editCategoryTitle" = "Редактирование категории";
+"editCategoryPlaceholder" = "Введите название категории";
+"editCategoryCreate" = "Готово";
+"scheduleTitle" = "Расписание";
+"scheduleCreate" = "Готово";
+
+"monday" = "Понедельник";
+"tuesday" = "Вторник";
+"wednesday" = "Среда";
+"thursday" = "Четверг";
+"friday" = "Пятница";
+"saturday" = "Суббота";
+"sunday" = "Воскресенье";
+
+"mon" = "Пн";
+"tue" = "Вт";
+"wed" = "Ср";
+"thu" = "Чт";
+"fri" = "Пт";
+"sat" = "Сб";
+"sun" = "Вс";
+
+"days" = "день";
+
+"statisticsAppTitle" = "Статистика";
+"statisticPlaceholder" = "Анализировать пока нечего";

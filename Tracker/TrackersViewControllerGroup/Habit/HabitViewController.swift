@@ -46,10 +46,12 @@ final class HabitViewController: UIViewController {
     /// Заголовок окна создания привычки
     private lazy var viewControllerName: UILabel = {
         let label = UILabel()
+        let localizedHabitTitle = NSLocalizedString("newHabitTitle", comment: "")
+        let localizedEventTitle = NSLocalizedString("newEventTitle", comment: "")
         if trackerType == "Habbit" {
-            label.text = "Новая привычка"
+            label.text = localizedHabitTitle
         } else {
-            label.text = "Новое нерегулярное событий"
+            label.text = localizedEventTitle
         }
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,7 +61,8 @@ final class HabitViewController: UIViewController {
     /// Заголовок выбора названия привычки
     private lazy var habbitName: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
+        let localizedTrackerCreatePlaceholder = NSLocalizedString("trackerCreatePlaceholder", comment: "")
+        textField.placeholder = localizedTrackerCreatePlaceholder
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.borderStyle = .none
         textField.backgroundColor = .ypAppBackground
@@ -77,7 +80,8 @@ final class HabitViewController: UIViewController {
     /// Предупреждение об ограничении максимального количества символов
     private lazy var maxTrackerLength: UILabel = {
         let limit = UILabel()
-        limit.text = "Ограничение 38 символов"
+        let localizedTrackerNameLimit = NSLocalizedString("trackerNameLimit", comment: "")
+        limit.text = localizedTrackerNameLimit
         limit.font = .systemFont(ofSize: 17, weight: .regular)
         limit.textColor = .ypRed
         limit.translatesAutoresizingMaskIntoConstraints = false
@@ -122,7 +126,8 @@ final class HabitViewController: UIViewController {
     /// Кнопка отмены создания трекера
     private lazy var habbitTrackerDismiss: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Отменить", for: .normal)
+        let localizedDismissButtonString = NSLocalizedString("cancelButton", comment: "")
+        button.setTitle(localizedDismissButtonString, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypRed, for: .normal)
         button.backgroundColor = .ypWhite
@@ -134,13 +139,15 @@ final class HabitViewController: UIViewController {
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(habitTrackerDismissButtonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        
         return button
     }()
     
     // Кнопка создания трекера
     private lazy var habbitTrackerCreate: UIButton = {
         let button = UIButton()
-        button.setTitle("Создать", for: .normal)
+        let localizedCreateButtonString = NSLocalizedString("createButton", comment: "")
+        button.setTitle(localizedCreateButtonString, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
@@ -324,15 +331,18 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
         cell.layer.cornerRadius = 16
         cell.layer.masksToBounds = true
         
+        let localizedCategoryName = NSLocalizedString("categoryName", comment: "")
+        let localizedScheduleName = NSLocalizedString("scheduleName", comment: "")
+        
         if trackerType == "Habbit" {
             if indexPath.row == 0 {
                 let trackerCategory = selectedCategory ?? ""
-                cell.textLabel?.text = "Категория"
+                cell.textLabel?.text = localizedCategoryName
                 cell.detailTextLabel?.text = trackerCategory
                 cell.detailTextLabel?.textColor = .ypGray
             } else if indexPath.row == 1 {
                 let trackerSchedule = selectedSchedule ?? ""
-                cell.textLabel?.text = "Расписание"
+                cell.textLabel?.text = localizedScheduleName
                 cell.detailTextLabel?.text = trackerSchedule
                 cell.detailTextLabel?.textColor = .ypGray
                 
@@ -346,7 +356,7 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
             }
         } else {
             let trackerCategory = selectedCategory ?? ""
-            cell.textLabel?.text = "Категория"
+            cell.textLabel?.text = localizedCategoryName
             cell.detailTextLabel?.text = trackerCategory
             cell.detailTextLabel?.textColor = .ypGray
             
@@ -457,11 +467,13 @@ extension HabitViewController: UICollectionViewDataSource {
         }
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! HabbitCellSupplementaryView // 6
+        let localizedColorCollectionTitle = NSLocalizedString("colorCollectionTitle", comment: "")
+        
         if indexPath.section == 0 {
             view.titleLabel.text = "Emoji"
             return view
         } else {
-            view.titleLabel.text = "Цвет"
+            view.titleLabel.text = localizedColorCollectionTitle
             return view
         }
     }

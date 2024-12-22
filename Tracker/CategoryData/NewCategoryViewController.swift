@@ -17,7 +17,8 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
     /// Заголовок окна создания новой категории
     private lazy var  newCategoryTitle: UILabel = {
         let label = UILabel()
-        label.text = "Новая категория"
+        let localizedNewCategoryTitle = NSLocalizedString("newCategoryTitle", comment: "")
+        label.text = localizedNewCategoryTitle
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -26,7 +27,8 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
     /// Заголовок ввода названия новой категории
     private lazy var newCategoryName: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название категории"
+        let localizedNewCategoryPlceholder = NSLocalizedString("newCategoryPlaceholder", comment: "")
+        textField.placeholder = localizedNewCategoryPlceholder
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.borderStyle = .none
         textField.backgroundColor = .ypAppBackground
@@ -44,7 +46,8 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
     // Кнопка создания новой категории
     private lazy var newCategoryCreate: UIButton = {
         let button = UIButton()
-        button.setTitle("Готово", for: .normal)
+        let localizedNewCategoryCreateButton = NSLocalizedString("newCategoryCreate", comment: "")
+        button.setTitle(localizedNewCategoryCreateButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray

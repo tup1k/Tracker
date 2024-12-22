@@ -1,0 +1,67 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Олег Кор on 21.12.2024.
+  
+*/
+"onboardingTitleOne" = "Track only \nwhat you want";
+"onboardingTitleTwo" = "Even if it's not \nliters of water and yoga";
+"onboardingButton" = "That's technology!";
+
+"trackersAppTitle" = "Trackers";
+"statisticAppTitle" = "Statistics";
+
+"findTrackerPlaceholder" = "Find";
+"searchPlaceholderLabel" = "Nothing was found";
+"trackerPlaceholder" = "What are we going to track?";
+"typeOfTrackerTitle" = "Creating a tracker";
+"contextMenuPin" = "Pin";
+"contextMenuEdit" = "Edit";
+"contextMenuDelete" = "Delete";
+
+"habitTypeButton" = "Habit";
+"eventTypeButton" = "Irregular event";
+
+"newHabitTitle" = "New habit";
+"newEventTitle" = "New irregular event";
+"trackerCreatePlaceholder" = "Enter the name of the tracker";
+"trackerNameLimit" = "The limit is 38 characters";
+"colorCollectionTitle" = "Color";
+"categoryName" = "Сategory";
+"scheduleName" = "Schedule";
+"categoryPlaceholder" = "Habits and events can be \ncombined in meaning";
+"createButton" = "Create";
+"cancelButton" = "Cancel";
+"addCategoryButton" = "Add a category";
+"contextDeleteQuestion" = "Is this category definitely not needed?";
+"deleteButton" = "Delete";
+"newCategoryTitle" = "New category";
+"newCategoryPlaceholder" = "Enter the category name";
+"newCategoryCreate" = "Done";
+"editCategoryTitle" = "Editing a category";
+"editCategoryPlaceholder" = "Enter the category name";
+"editCategoryCreate" = "Done";
+"scheduleTitle" = "Schedule";
+"scheduleCreate" = "Done";
+
+"monday" = "Monday";
+"tuesday" = "Tuesday";
+"wednesday" = "Wednesday";
+"thursday" = "Thursday";
+"friday" = "Friday";
+"saturday" = "Saturday";
+"sunday" = "Sunday";
+
+"mon" = "Mon";
+"tue" = "Tue";
+"wed" = "Wed";
+"thu" = "Thu";
+"fri" = "Fri";
+"sat" = "Sat";
+"sun" = "Sun";
+
+"days" = " day";
+
+"statisticsAppTitle" = "Statistics";
+"statisticPlaceholder" = "There is nothing to analyze yet";

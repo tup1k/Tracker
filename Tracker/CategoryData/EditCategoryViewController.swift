@@ -18,7 +18,8 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
     /// Заголовок окна создания новой категории
     private lazy var editCategoryTitle: UILabel = {
         let label = UILabel()
-        label.text = "Редактирование категории"
+        let localizedEditCategoryTitle = NSLocalizedString("editCategoryTitle", comment: "")
+        label.text = localizedEditCategoryTitle
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -27,7 +28,8 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
     /// Заголовок ввода названия новой категории
     private lazy var editCategoryName: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название категории"
+        let localizedEditCategoryPlaceholder = NSLocalizedString("editCategoryPlaceholder", comment: "")
+        textField.placeholder = localizedEditCategoryPlaceholder
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.borderStyle = .none
         textField.backgroundColor = .ypAppBackground
@@ -45,7 +47,8 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
     // Кнопка создания новой категории
     private lazy var editCategoryCreate: UIButton = {
         let button = UIButton()
-        button.setTitle("Готово", for: .normal)
+        let localizedEditCategoryCreateButton = NSLocalizedString("editCategoryCreate", comment: "")
+        button.setTitle(localizedEditCategoryCreateButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
