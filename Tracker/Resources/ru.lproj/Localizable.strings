@@ -19,6 +19,12 @@
 "contextMenuPin" = "Закрепить";
 "contextMenuEdit" = "Редактировать";
 "contextMenuDelete" = "Удалить";
+"filterButtonLabel" = "Фильтры";
+"filterTitle" = "Фильтры";
+"allTrackers" = "Все трекеры";
+"todayTrackers" = "Трекеры на сегодня";
+"finishedTrackers" = "Завершенные";
+"notFinishedTrackers" = "Не завершенные";
 
 "habitTypeButton" = "Привычка";
 "eventTypeButton" = "Нерегулярное событие";

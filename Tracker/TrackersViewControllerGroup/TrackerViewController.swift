@@ -1,5 +1,6 @@
 // Стартовый контроллер создания и просмотра трекеров
 import UIKit
+import YandexMobileMetrica
 
 
 final class TrackerViewController: UIViewController, UITextFieldDelegate, UISearchBarDelegate {
@@ -15,6 +16,8 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     let trackerStore = TrackerStore.shared
     let trackerCategoryStore = TrackerCategoryStore.shared
     let trackerRecordStore = TrackerRecordStore.shared
+    let analyticsService = AnalyticsService()
+    
     
     /// Кнопка выбора даты
     private lazy var pickerDate: UIDatePicker = {
@@ -24,6 +27,9 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         datePicker.preferredDatePickerStyle = .compact
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.backgroundColor = .ypDatePicker
+        datePicker.layer.cornerRadius = 8
+        datePicker.layer.masksToBounds = true
         return datePicker
     }()
     
@@ -108,6 +114,20 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         let formattedDate = dateFormatter.string(from: selectedDate)
         return dateFormatter.date(from: formattedDate) ?? Date()
     }
+    
+    private lazy var filterButton: UIButton = {
+        let button = UIButton()
+        let localizedFilterButtonLabel = NSLocalizedString("filterButtonLabel", comment: "")
+        button.setTitle(localizedFilterButtonLabel, for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+        button.backgroundColor = .ypBlue
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(filterButtonTaped), for: .touchUpInside)
+        return button
+    }()
   
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -153,6 +173,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         view.addSubview(searchPlaceholderImage)
         view.addSubview(searchPlaceholderLabel)
         view.addSubview(trackerCollectionView)
+        view.addSubview(filterButton)
         
         NSLayoutConstraint.activate([
             trackerPlaceholderImage.widthAnchor.constraint(equalToConstant: 80),
@@ -174,6 +195,11 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
             trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             trackerCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.widthAnchor.constraint(equalToConstant: 114),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
         ])
     }
     
@@ -209,6 +235,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         let controller = TrackerCreationViewController()
         controller.delegate = self
         self.present(controller, animated: true, completion: nil)
+        analyticsService.report(event: "tracker_add", params: ["add_trackers_count" : trackers.count])
     }
     
     /// Выбор даты в пикере
@@ -224,6 +251,15 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     @objc private func keyboardSwitchOff() {
         view.endEditing(true)
     }
+    
+    @objc private func filterButtonTaped() {
+        let controller = FilterViewController()
+        controller.delegate = self
+        self.present(controller, animated: true, completion: nil)
+//        analyticsService.report(event: "tracker_add", params: ["add_trackers_count" : trackers.count])
+
+    }
+    
 }
 
 /// Параметры ячейки и хедера

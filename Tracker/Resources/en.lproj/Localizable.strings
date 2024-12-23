@@ -19,6 +19,12 @@
 "contextMenuPin" = "Pin";
 "contextMenuEdit" = "Edit";
 "contextMenuDelete" = "Delete";
+"filterButtonLabel" = "Filters";
+"filterTitle" = "Filters";
+"allTrackers" = "All trackers";
+"todayTrackers" = "Today trackers";
+"finishedTrackers" = "Completed";
+"notFinishedTrackers" = "Incomplete";
 
 "habitTypeButton" = "Habit";
 "eventTypeButton" = "Irregular event";
