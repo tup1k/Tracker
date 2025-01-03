@@ -1,25 +1,26 @@
 //
-//  HabitViewController.swift
+//  EditTrackerViewController.swift
 //  Tracker
 //
-//  Created by Олег Кор on 04.11.2024.
+//  Created by Олег Кор on 25.12.2024.
 //
 
 import UIKit
 
-protocol AddNewTrackerViewControllerDelegate: AnyObject {
-    func addTracker(category: String, tracker: Tracker)
+protocol EditTrackerViewControllerDelegate: AnyObject {
+    func editTracker(category: String, tracker: Tracker)
 }
 
-final class HabitViewController: UIViewController {
+final class EditTrackerViewController: UIViewController {
     let trackerColors = Colors()
     let trackerEmoji = Emoji()
     let categoryVC = TrackerViewController()
     let trackerStore = TrackerStore.shared
-    var trackerType: String = ""
+    let trackerRecordStore = TrackerRecordStore.shared
+    
     var tableViewHeight: Int = 150
     
-    weak var delegate: AddNewTrackerViewControllerDelegate?
+    weak var delegate: EditTrackerViewControllerDelegate?
     
     private var selectedEmoji: String?
     private var selectedEmojiIndex: IndexPath?
@@ -28,6 +29,20 @@ final class HabitViewController: UIViewController {
     private var selectedCategory: String?
     private var selectedSchedule: String?
     private var schedule:[Days] = []
+    var editedTracker: Tracker
+    var editedCategory: String
+    var trackerType: String = ""
+    var trackerIsPinned: Bool?
+    
+    init(editedTracker: Tracker, editedCategory: String) {
+        self.editedTracker = editedTracker
+        self.editedCategory = editedCategory
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     /// Скролл экран для задания всех настроек привычки
     private lazy var habbitScrollView: UIScrollView = {
@@ -46,12 +61,12 @@ final class HabitViewController: UIViewController {
     /// Заголовок окна создания привычки
     private lazy var viewControllerName: UILabel = {
         let label = UILabel()
-        let localizedHabitTitle = NSLocalizedString("newHabitTitle", comment: "")
-        let localizedEventTitle = NSLocalizedString("newEventTitle", comment: "")
-        if trackerType == "Habbit" {
-            label.text = localizedHabitTitle
+        let localizedEditHabitTitle = NSLocalizedString("editNewHabitTitle", comment: "")
+        let localizedEditEventTitle = NSLocalizedString("editNewEventTitle", comment: "")
+        if editedTracker.trackerType == "Habbit" {
+            label.text = localizedEditHabitTitle
         } else {
-            label.text = localizedEventTitle
+            label.text = localizedEditEventTitle
         }
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -61,8 +76,7 @@ final class HabitViewController: UIViewController {
     /// Заголовок выбора названия привычки
     private lazy var habbitName: UITextField = {
         let textField = UITextField()
-        let localizedTrackerCreatePlaceholder = NSLocalizedString("trackerCreatePlaceholder", comment: "")
-        textField.placeholder = localizedTrackerCreatePlaceholder
+        textField.text = editedTracker.trackerName
         textField.font = .systemFont(ofSize: 17, weight: .regular)
         textField.borderStyle = .none
         textField.backgroundColor = .ypAppBackground
@@ -89,6 +103,18 @@ final class HabitViewController: UIViewController {
         return limit
     }()
     
+    /// Счетчик выполненных трекеров
+    private lazy var counterLabel: UILabel = {
+        let counter = UILabel()
+        let completedCountCoreData = trackerRecordStore.countCoreDataRecordComplete(id: editedTracker.id ?? UUID())
+        counter.text =  String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "") , completedCountCoreData)
+        counter.font = .systemFont(ofSize: 32, weight: .bold)
+        counter.textColor = .ypBlack
+        counter.textAlignment = .center
+        counter.translatesAutoresizingMaskIntoConstraints = false
+        return counter
+    }()
+    
     /// Таблица для перехода в подраздел Категории/Расписание
     private lazy var habbitPropertiesTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -96,7 +122,7 @@ final class HabitViewController: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .ypLightGray
-        if trackerType == "Habbit" {
+        if editedTracker.trackerType == "Habbit" {
             tableView.separatorStyle = .singleLine
         } else {
             tableView.separatorStyle = .none
@@ -111,7 +137,7 @@ final class HabitViewController: UIViewController {
     
     /// Отображение коллекции выбора эмоджи и цвета трекера
     private lazy var habbitCollectionView: UICollectionView = {
-       let layout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 5
         layout.minimumInteritemSpacing = 9
@@ -134,7 +160,7 @@ final class HabitViewController: UIViewController {
         button.tintColor = .ypRed
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.ypRed.cgColor
-        button.accessibilityIdentifier = "habbitTrackerDismiss"
+        button.accessibilityIdentifier = "editHabbitTrackerDismiss"
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(habitTrackerDismissButtonPressed), for: .touchUpInside)
@@ -146,12 +172,12 @@ final class HabitViewController: UIViewController {
     // Кнопка создания трекера
     private lazy var habbitTrackerCreate: UIButton = {
         let button = UIButton()
-        let localizedCreateButtonString = NSLocalizedString("createButton", comment: "")
+        let localizedCreateButtonString = NSLocalizedString("saveButton", comment: "")
         button.setTitle(localizedCreateButtonString, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypGray
-        button.accessibilityIdentifier = "habbitTrackerCreate"
+        button.accessibilityIdentifier = "editHabbitTrackerCreate"
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(habitTrackerCreateButtonPressed), for: .touchUpInside)
@@ -163,16 +189,30 @@ final class HabitViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.accessibilityIdentifier = "HabitVC"
+        view.accessibilityIdentifier = "EditHabitVC"
         view.backgroundColor = .ypWhite
-
+        
+        if let emojiIndex = trackerEmoji.trackerEmoji.firstIndex(of: editedTracker.trackerEmoji) {
+            let existEmojiIndex = IndexPath(row: emojiIndex, section: 0)
+            collectionView(habbitCollectionView, didSelectItemAt: existEmojiIndex)
+        }
+        
+      
+        if let colorIndex = trackerColors.trackerBackgroundColors.firstIndex(where: { UIColor.uiColorsEqual(color1: $0, color2: editedTracker.trackerColor) }) {
+            let existColorIndex = IndexPath(item: colorIndex, section: 1)
+            collectionView(habbitCollectionView, didSelectItemAt: existColorIndex)
+        }
+        
         createView()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(keyboardSwitchOff))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
         habbitName.delegate = self
-      }
+        
+        habbitCollectionView.reloadData()
+        blockButtons()
+    }
 
     /// Метод создания UI
     private func createView() {
@@ -192,6 +232,7 @@ final class HabitViewController: UIViewController {
         
         view.addSubview(viewControllerName)
         view.addSubview(habbitScrollView)
+        habbitScrollView.addSubview(counterLabel)
         habbitScrollView.addSubview(habbitContentView)
         habbitContentView.addSubview(habbitName)
         habbitContentView.addSubview(maxTrackerLength)
@@ -200,7 +241,7 @@ final class HabitViewController: UIViewController {
         habbitContentView.addSubview(habbitButtonsStack)
         habbitButtonsStack.translatesAutoresizingMaskIntoConstraints = false
   
-        tableViewHeight = trackerType == "Event" ? 75 : 150
+        tableViewHeight = editedTracker.trackerType == "Event" ? 75 : 150
         
         NSLayoutConstraint.activate([
             viewControllerName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
@@ -217,7 +258,12 @@ final class HabitViewController: UIViewController {
             habbitContentView.bottomAnchor.constraint(equalTo: habbitScrollView.bottomAnchor),
             habbitContentView.widthAnchor.constraint(equalTo: habbitScrollView.widthAnchor),
             
-            habbitName.topAnchor.constraint(equalTo: habbitContentView.topAnchor, constant: 24),
+            counterLabel.topAnchor.constraint(equalTo: habbitContentView.topAnchor, constant: 24),
+            counterLabel.centerXAnchor.constraint(equalTo: habbitContentView.centerXAnchor),
+            counterLabel.widthAnchor.constraint(equalToConstant: 343),
+            counterLabel.heightAnchor.constraint(equalToConstant: 38),
+            
+            habbitName.topAnchor.constraint(equalTo: counterLabel.bottomAnchor, constant: 40),
             habbitName.centerXAnchor.constraint(equalTo: habbitContentView.centerXAnchor),
             habbitName.leadingAnchor.constraint(equalTo: habbitContentView.leadingAnchor, constant: 16),
             habbitName.trailingAnchor.constraint(equalTo: habbitContentView.trailingAnchor, constant: -16),
@@ -259,17 +305,12 @@ final class HabitViewController: UIViewController {
 
         if trackerType == "Event" {
             eventDateSetup()
-            AnalyticsService.addEventReport()
-        } else {
-            AnalyticsService.addHabitReport()
         }
         
-        let newTracker = Tracker(id: UUID(), trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: trackerType, pinned: false)
-        trackerStore.saveTrackerToCoreData(tracker: newTracker, categoryName: category)
+        let editedTracker = Tracker(id: editedTracker.id, trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: trackerType, pinned: trackerIsPinned ?? false)
+        try? trackerStore.editTrackerInCoreData(tracker: editedTracker, categoryName: category)
         
-        delegate?.addTracker(category: category, tracker: newTracker)
-        print("СОЗДАН ТРЕКЕР С НОМЕРОМ \(newTracker.id), ИМЕНЕМ \(name), ЦВЕТОМ \(color), ЭМОДЗИ \(emoji), ДНЯМИ НЕДЕЛИ \(newTracker.trackerShedule), ТИП \(trackerType)")
-        
+        delegate?.editTracker(category: category, tracker: editedTracker)
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
@@ -320,7 +361,7 @@ final class HabitViewController: UIViewController {
     }
 }
 
-extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
+extension EditTrackerViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return trackerType == "Habbit" ? 2 : 1
     }
@@ -339,12 +380,12 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
         
         if trackerType == "Habbit" {
             if indexPath.row == 0 {
-                let trackerCategory = selectedCategory ?? ""
+                let trackerCategory = selectedCategory ?? editedCategory
                 cell.textLabel?.text = localizedCategoryName
                 cell.detailTextLabel?.text = trackerCategory
                 cell.detailTextLabel?.textColor = .ypGray
             } else if indexPath.row == 1 {
-                let trackerSchedule = selectedSchedule ?? ""
+                let trackerSchedule = selectedSchedule ?? shortDaysText(days: editedTracker.trackerShedule)
                 cell.textLabel?.text = localizedScheduleName
                 cell.detailTextLabel?.text = trackerSchedule
                 cell.detailTextLabel?.textColor = .ypGray
@@ -375,27 +416,32 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
         
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let editedDays = editedTracker.trackerShedule
+        
         
         if trackerType == "Habbit" {
             if indexPath.row == 1 {
                 let controller = HabitScheduleViewController()
+                controller.selectedDays = editedDays
                 controller.delegate = self
                 self.present(controller, animated: true, completion: nil)
             }
             else {
                 let controller = CategoryViewController()
+                controller.editedCategories = editedCategory
                 controller.delegate = self
                 self.present(controller, animated: true, completion: nil)
             }
         } else {
             let controller = CategoryViewController()
+            controller.editedCategories = editedCategory
             controller.delegate = self
             self.present(controller, animated: true, completion: nil)
         }
     }
 }
 
-extension HabitViewController: UITextFieldDelegate {
+extension EditTrackerViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -409,7 +455,7 @@ extension HabitViewController: UITextFieldDelegate {
     }
 }
 
-extension HabitViewController: UICollectionViewDataSource {
+extension EditTrackerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
@@ -466,7 +512,7 @@ extension HabitViewController: UICollectionViewDataSource {
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
         default:
-            id = ""                                         
+            id = ""
         }
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! HabbitCellSupplementaryView // 6
@@ -497,7 +543,7 @@ extension HabitViewController: UICollectionViewDataSource {
 }
 
 /// Параметры расположения ячеек
-extension HabitViewController: UICollectionViewDelegateFlowLayout {
+extension EditTrackerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize { // 1
         return CGSize(width: 52, height: 52)
     }
@@ -519,7 +565,7 @@ extension HabitViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension HabitViewController: ScheduleViewControllerDelegate {
+extension EditTrackerViewController: ScheduleViewControllerDelegate {
     func newSchedule(schedule: [Days]) {
         self.schedule = schedule
         selectedSchedule = shortDaysText(days: schedule)
@@ -534,11 +580,10 @@ extension HabitViewController: ScheduleViewControllerDelegate {
     }
 }
 
-extension HabitViewController: CategoryViewControllerDelegate {
+extension EditTrackerViewController: CategoryViewControllerDelegate {
     func selectNewCategory(category: String) {
         self.selectedCategory = category
         blockButtons()
         habbitPropertiesTableView.reloadData()
     }
 }
-    

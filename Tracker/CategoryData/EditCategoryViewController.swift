@@ -121,6 +121,14 @@ final class EditCategoryViewController: UIViewController, UITextFieldDelegate {
     
     @objc private func editCategoryCreateButtonPressed() {
         guard let newCategoryName = editCategoryName.text else { return }
+        
+        if newCategoryName == "Закрепленные" || newCategoryName == "Pinned" {
+            let alert = UIAlertController(title: "Ошибка", message: "Категория с названием 'Закрепленные' не может быть создана.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "ОК", style: .default))
+            present(alert, animated: true, completion: nil)
+            return
+        }
+        
         delegate?.editNewCategoryName(oldCategoryName: oldCategoryName , newCategoryName: newCategoryName)
         dismiss(animated: true, completion: nil)
     } 

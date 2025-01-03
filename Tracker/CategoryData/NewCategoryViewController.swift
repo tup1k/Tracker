@@ -119,7 +119,15 @@ final class NewCategoryViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func newCategoryCreateButtonPressed() {
-        guard let categoryName = newCategoryName.text else { return }
+        guard let categoryName = newCategoryName.text, !categoryName.isEmpty else { return }
+        
+        if categoryName == "Закрепленные" || categoryName == "Pinned" {
+            let alert = UIAlertController(title: "Ошибка", message: "Категория с названием 'Закрепленные' не может быть создана.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "ОК", style: .default))
+            present(alert, animated: true, completion: nil)
+            return
+        }
+        
         delegate?.createNewCategoryName(categoryName: categoryName)
         dismiss(animated: true, completion: nil)
     }

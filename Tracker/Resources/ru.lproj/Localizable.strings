@@ -17,20 +17,25 @@
 "trackerPlaceholder" = "Что будем отслеживать?";
 "typeOfTrackerTitle" = "Создание трекера";
 "contextMenuPin" = "Закрепить";
+"contextMenuUnpin" = "Открепить";
 "contextMenuEdit" = "Редактировать";
 "contextMenuDelete" = "Удалить";
+"saveButton" = "Сохранить";
 "filterButtonLabel" = "Фильтры";
 "filterTitle" = "Фильтры";
 "allTrackers" = "Все трекеры";
 "todayTrackers" = "Трекеры на сегодня";
 "finishedTrackers" = "Завершенные";
 "notFinishedTrackers" = "Не завершенные";
+"pinnedTrackerCategory" = "Закрепленные";
 
 "habitTypeButton" = "Привычка";
 "eventTypeButton" = "Нерегулярное событие";
 
 "newHabitTitle" = "Новая привычка";
 "newEventTitle" = "Новое нерегулярное событие";
+"editNewHabitTitle" = "Редактирование привычки";
+"editNewEventTitle" = "Редактирование нерегулярного события";
 "trackerCreatePlaceholder" = "Введите название трекера";
 "trackerNameLimit" = "Ограничение 38 символов";
 "colorCollectionTitle" = "Цвет";
@@ -71,3 +76,5 @@
 
 "statisticsAppTitle" = "Статистика";
 "statisticPlaceholder" = "Анализировать пока нечего";
+"countOfTrackersToComplete" = "Трекеров завершено";
+

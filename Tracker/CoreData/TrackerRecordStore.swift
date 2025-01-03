@@ -83,5 +83,17 @@ final class TrackerRecordStore: NSObject {
             return false
         }
     }
+    
+    func allCompletedTrackersCount() -> Int {
+        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        
+        do {
+            let allTrackerRecords = try context.fetch(fetchRequest)
+            return allTrackerRecords.count
+        } catch {
+            print("ОШИБКА ПОДСЧЕТА КОЛИЧЕСТВА ВЫПОЛНЕННЫХ ТРЕКЕРОВ: \(error.localizedDescription)")
+            return 0
+        }
+    }
 }
 

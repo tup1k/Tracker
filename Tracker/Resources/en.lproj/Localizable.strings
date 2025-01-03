@@ -17,20 +17,25 @@
 "trackerPlaceholder" = "What are we going to track?";
 "typeOfTrackerTitle" = "Creating a tracker";
 "contextMenuPin" = "Pin";
+"contextMenuUnpin" = "Unpin";
 "contextMenuEdit" = "Edit";
 "contextMenuDelete" = "Delete";
+"saveButton" = "Save";
 "filterButtonLabel" = "Filters";
 "filterTitle" = "Filters";
 "allTrackers" = "All trackers";
 "todayTrackers" = "Today trackers";
 "finishedTrackers" = "Completed";
 "notFinishedTrackers" = "Incomplete";
+"pinnedTrackerCategory" = "Pinned";
 
 "habitTypeButton" = "Habit";
 "eventTypeButton" = "Irregular event";
 
 "newHabitTitle" = "New habit";
-"newEventTitle" = "New irregular event";
+"newEventTitle" = "New non-regular event";
+"editNewHabitTitle" = "Editing a habit";
+"editNewEventTitle" = "Editing a non-regular event";
 "trackerCreatePlaceholder" = "Enter the name of the tracker";
 "trackerNameLimit" = "The limit is 38 characters";
 "colorCollectionTitle" = "Color";
@@ -71,3 +76,4 @@
 
 "statisticsAppTitle" = "Statistics";
 "statisticPlaceholder" = "There is nothing to analyze yet";
+"countOfTrackersToComplete" = "Completed trackers";

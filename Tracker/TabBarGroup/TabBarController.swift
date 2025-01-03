@@ -23,7 +23,7 @@ final class TabBarController: UITabBarController {
                                                         image: UIImage(named: "TrackerTabImage"),
                                                         selectedImage: nil)
         
-        let statisticViewController = UINavigationController(rootViewController: StatisticViewController())
+        let statisticViewController = UINavigationController(rootViewController: StatisticsViewController())
         statisticViewController.tabBarItem = UITabBarItem(title: localizedStatisticTitle,
                                                         image: UIImage(named: "StatisticTabImage"),
                                                         selectedImage: nil)
@@ -40,6 +40,4 @@ final class TabBarController: UITabBarController {
         guard let tabBarTitle = viewController.tabBarItem.title else {return}
         print("Выбрана страница \(tabBarTitle)")
     }
-    
-  
 }

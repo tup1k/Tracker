@@ -13,7 +13,7 @@ protocol ScheduleViewControllerDelegate: AnyObject {
 
 final class HabitScheduleViewController: UIViewController {
     weak var delegate: ScheduleViewControllerDelegate?
-    private var selectedDays: [Days] = []
+    var selectedDays: [Days] = []
     
     /// Заголовок расписания
     private lazy var scheduleTitle: UILabel = {
@@ -127,9 +127,11 @@ extension HabitScheduleViewController: UITableViewDataSource, UITableViewDelegat
         
         let dayToggle = UISwitch()
         cell.accessoryView = dayToggle
+        
         dayToggle.onTintColor = .ypBlue
         dayToggle.addTarget(self, action: #selector(selectedDay), for: .valueChanged)
         dayToggle.tag = indexPath.row
+        dayToggle.isOn = selectedDays.contains(Days.allCases[indexPath.row])
         
         return cell
     }

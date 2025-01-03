@@ -61,6 +61,7 @@ final class TrackerCreationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         habitVCConstrait()
+        AnalyticsService.openScreenReport(screen: .typeOfTracker)
     }
         
     /// Привязка элементов к экрану
@@ -96,6 +97,7 @@ final class TrackerCreationViewController: UIViewController {
         controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
         controller.trackerType = "Habbit"
         self.present(controller, animated: true, completion: nil)
+        AnalyticsService.addHabitReport()
     }
     
     @objc private func unregularButtonPressed() {
@@ -103,6 +105,7 @@ final class TrackerCreationViewController: UIViewController {
         controller.delegate = delegate as? any AddNewTrackerViewControllerDelegate
         controller.trackerType = "Event"
         self.present(controller, animated: true, completion: nil)
+        AnalyticsService.addEventReport()
     }
     
 }

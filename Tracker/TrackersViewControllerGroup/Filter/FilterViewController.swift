@@ -8,17 +8,12 @@
 import UIKit
 
 protocol FilterViewControllerDelegate: AnyObject {
-    func selectFilterType(filter: String)
+    func selectFilterType(filter: Int)
 }
 
 final class FilterViewController: UIViewController {
     weak var delegate: FilterViewControllerDelegate?
-
-//    private let categoryVC = TrackerViewController()
-//    private let viewModel = CategoryViewModel()
-//    private let trackerCategoryStore = TrackerCategoryStore.shared
-    
-    private var selectedFilter: Int?
+    var selectedFilter: Int?
     private let filtersName: [String] = [NSLocalizedString("allTrackers", comment: ""), NSLocalizedString("todayTrackers", comment: ""), NSLocalizedString("finishedTrackers", comment: ""), NSLocalizedString("notFinishedTrackers", comment: "")]
     
     /// Заголовок
@@ -46,20 +41,18 @@ final class FilterViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
-  
     
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            view.accessibilityIdentifier = "filterVC"
-            view.backgroundColor = .ypWhite
-            
-            filterTableView.dataSource = self
-            filterTableView.delegate = self
-           
-            binding()
-            viewModel.loadCategoriesFromCoreData()
-            createView()
-        }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.accessibilityIdentifier = "filterVC"
+        view.backgroundColor = .ypWhite
+        
+        filterTableView.dataSource = self
+        filterTableView.delegate = self
+        
+        createView()
+    }
     
     // Создание UI
     private func createView() {
@@ -74,24 +67,25 @@ final class FilterViewController: UIViewController {
             filterTableView.topAnchor.constraint(equalTo: filterTitle.bottomAnchor, constant: 24),
             filterTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             filterTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            filterTableView.heightAnchor.constraint(equalToConstant: 300),
+            filterTableView.heightAnchor.constraint(equalToConstant: 343),
         ])
     }
-        
-
+}
+    
+   
 extension FilterViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filtersName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryListCell.identifier, for: indexPath) as? CategoryListCell else { fatalError() }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "filterCell", for: indexPath)
         let typeOfFilter = filtersName[indexPath.row]
         cell.textLabel?.text = typeOfFilter
         cell.textLabel?.textColor = .ypBlack
         cell.backgroundColor = .ypAppBackground
         cell.selectionStyle = .none
-        cell.accessoryType = (viewModel.isSelectedCategory(category: category)) ? .checkmark : .none
+        cell.accessoryType = (selectedFilter == indexPath.row) ? .checkmark : .none
         
         return cell
     }
@@ -101,9 +95,14 @@ extension FilterViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectCategory(category: viewModel.actualCategories[indexPath.row])
+        let numberOfFilter = indexPath.row
+        tableView.reloadData()
+        delegate?.selectFilterType(filter: numberOfFilter)
+        self.dismiss(animated: true, completion: nil)
     }
- 
-    
+}
 
-    
+        
+        
+        
+

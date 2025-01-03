@@ -33,8 +33,9 @@ final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
                     let type = trackerCoreData.trackerType
                 else { return nil }
                 
+                let pin = trackerCoreData.pinned
                 let schedule = CoreDataScheduleTransformer.shared.stringToDays(stringDays: trackerCoreData.trackerShedule ?? "")
-                return Tracker(id: id, trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: type)
+                return Tracker(id: id, trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: type, pinned: pin)
             })
             resultCategories.append(TrackerCategory(categoryName: name, categoryTrackers: trackers))
         }

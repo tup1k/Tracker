@@ -23,6 +23,7 @@ final class CategoryViewModel {
 
     private var trackerStore = TrackerStore.shared
     private var trackerCategoryStore = TrackerCategoryStore.shared
+    var pinnedTrackers: [Tracker] = []
     
     /// Метод загрузки данных из CoreData при первом входе в приложение по паттерну MVVM
     func loadCategoriesFromCoreData() {
@@ -64,4 +65,8 @@ final class CategoryViewModel {
     func didSelectCategory(category: String) {
         selectedCategory = category
     } 
+    
+//    func getPinnedTrackers() -> [Tracker] {
+//        
+//    }
 }

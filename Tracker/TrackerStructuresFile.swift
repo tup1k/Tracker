@@ -15,14 +15,16 @@ class Tracker {
     let trackerEmoji: String
     let trackerShedule: [Days]
     let trackerType: String
+    var pinned: Bool = false
     
-    init(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days], trackerType: String) {
+    init(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days], trackerType: String, pinned: Bool) {
         self.id = id
         self.trackerName = trackerName
         self.trackerColor = trackerColor
         self.trackerEmoji = trackerEmoji
         self.trackerShedule = trackerShedule
         self.trackerType = trackerType
+        self.pinned = pinned
     }
     
     convenience init(from trackersFromCoreData: TrackerCoreData) {
@@ -36,7 +38,8 @@ class Tracker {
             trackerColor: trackerUIColor,
             trackerEmoji: trackersFromCoreData.trackerEmoji ?? "",
             trackerShedule: trackerCoreDataSchedule,
-            trackerType: trackersFromCoreData.trackerType ?? ""
+            trackerType: trackersFromCoreData.trackerType ?? "",
+            pinned: trackersFromCoreData.pinned
         )
     }
 }
@@ -52,7 +55,6 @@ struct TrackerRecord {
     let id: UUID
     let trackerDate: Date
 }
-
 
 /// Дни для расписания трекера
 import Foundation
@@ -85,4 +87,3 @@ enum Days: String, CaseIterable {
         }
     }
 }
-

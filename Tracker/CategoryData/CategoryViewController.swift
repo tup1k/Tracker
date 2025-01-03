@@ -17,6 +17,9 @@ final class CategoryViewController: UIViewController {
     private let categoryVC = TrackerViewController()
     private let viewModel = CategoryViewModel()
     private let trackerCategoryStore = TrackerCategoryStore.shared
+    var editedCategories: String = ""
+    
+    
     
     /// Заголовок
     private lazy var categoryTitle: UILabel = {
@@ -170,11 +173,17 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryListCell.identifier, for: indexPath) as? CategoryListCell else { fatalError() }
         let category = viewModel.actualCategories[indexPath.row]
+        print("МЫ ПЕРЕДАЕМ ВОТ ТАКУЮ КАТЕГОРИЮ \(category)")
         cell.textLabel?.text = category
         cell.textLabel?.textColor = .ypBlack
         cell.backgroundColor = .ypAppBackground
         cell.selectionStyle = .none
         cell.accessoryType = (viewModel.isSelectedCategory(category: category)) ? .checkmark : .none
+        if category == editedCategories {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         
         return cell
     }
@@ -184,7 +193,8 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectCategory(category: viewModel.actualCategories[indexPath.row])
+       let category = viewModel.actualCategories[indexPath.row]
+        viewModel.didSelectCategory(category: category)
     }
  
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {

@@ -5,7 +5,6 @@
 //  Created by Олег Кор on 03.12.2024.
 //
 
-
 import UIKit
 
 extension UIColor {
@@ -23,6 +22,30 @@ extension UIColor {
         let blue = Int(b * 255)
         
         return String(format: "#%02X%02X%02X", red, green, blue)
+    }
+    
+    // Преобразование rgb в HEX строку
+    func rgbToHex(red: Int, green: Int, blue: Int) -> String? {
+        // Проверка на корректность значений RGB (от 0 до 255)
+        guard (0...255).contains(red), (0...255).contains(green), (0...255).contains(blue) else {
+            return nil
+        }
+        
+        // Преобразуем каждую компоненту цвета в шестнадцатеричное значение и собираем строку
+        return String(format: "#%02X%02X%02X", red, green, blue)
+    }
+    
+    static func uiColorsEqual(color1: UIColor, color2: UIColor, tolerance: CGFloat = 0.01) -> Bool {
+        var red1: CGFloat = 0, green1: CGFloat = 0, blue1: CGFloat = 0, alpha1: CGFloat = 0
+        var red2: CGFloat = 0, green2: CGFloat = 0, blue2: CGFloat = 0, alpha2: CGFloat = 0
+        
+        color1.getRed(&red1, green: &green1, blue: &blue1, alpha: &alpha1)
+        color2.getRed(&red2, green: &green2, blue: &blue2, alpha: &alpha2)
+        
+        return abs(red1 - red2) <= tolerance &&
+               abs(green1 - green2) <= tolerance &&
+               abs(blue1 - blue2) <= tolerance &&
+               abs(alpha1 - alpha2) <= tolerance
     }
 }
 

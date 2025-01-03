@@ -9,7 +9,6 @@ import UIKit
 
 final class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     
-    
     private lazy var pages: [UIViewController] = {
         let pageOne = OnboardingViewControllerOne()
         let pageTwo = OnboardingViewControllerSecond()
@@ -35,7 +34,6 @@ final class OnboardingViewController: UIPageViewController, UIPageViewController
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
