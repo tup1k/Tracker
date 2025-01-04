@@ -42,7 +42,6 @@ final class FilterViewController: UIViewController {
         return tableView
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "filterVC"
@@ -72,7 +71,6 @@ final class FilterViewController: UIViewController {
     }
 }
     
-   
 extension FilterViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filtersName.count
@@ -86,7 +84,6 @@ extension FilterViewController: UITableViewDataSource, UITableViewDelegate {
         cell.backgroundColor = .ypAppBackground
         cell.selectionStyle = .none
         cell.accessoryType = (selectedFilter == indexPath.row) ? .checkmark : .none
-        
         return cell
     }
     

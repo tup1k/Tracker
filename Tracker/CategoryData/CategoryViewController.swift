@@ -13,15 +13,11 @@ protocol CategoryViewControllerDelegate: AnyObject {
 
 final class CategoryViewController: UIViewController {
     weak var delegate: CategoryViewControllerDelegate?
-
     private let categoryVC = TrackerViewController()
-    private let viewModel = CategoryViewModel()
+    private var viewModel = CategoryViewModel()
     private let trackerCategoryStore = TrackerCategoryStore.shared
     var editedCategories: String = ""
     
-    
-    
-    /// Заголовок
     private lazy var categoryTitle: UILabel = {
         let label = UILabel()
         let localizedCategoryTitle = NSLocalizedString("categoryName", comment: "")
@@ -81,6 +77,15 @@ final class CategoryViewController: UIViewController {
         button.addTarget(self, action: #selector(categoryButtonPressed), for: .touchUpInside)
         return button
     }()
+    
+//    init(viewModel: CategoryViewModel) {
+//        self.viewModel = viewModel
+//        super.init(nibName: nil, bundle: nil)
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -173,7 +178,6 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryListCell.identifier, for: indexPath) as? CategoryListCell else { fatalError() }
         let category = viewModel.actualCategories[indexPath.row]
-        print("МЫ ПЕРЕДАЕМ ВОТ ТАКУЮ КАТЕГОРИЮ \(category)")
         cell.textLabel?.text = category
         cell.textLabel?.textColor = .ypBlack
         cell.backgroundColor = .ypAppBackground
@@ -184,7 +188,6 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
         } else {
             cell.accessoryType = .none
         }
-        
         return cell
     }
     
@@ -194,7 +197,8 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
        let category = viewModel.actualCategories[indexPath.row]
-        viewModel.didSelectCategory(category: category)
+        editedCategories = category
+            viewModel.didSelectCategory(category: category)
     }
  
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {

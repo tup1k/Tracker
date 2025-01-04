@@ -26,7 +26,7 @@ final class EditTrackerViewController: UIViewController {
     private var selectedEmojiIndex: IndexPath?
     private var selectedColor: UIColor?
     private var selectedColorIndex: IndexPath?
-    private var selectedCategory: String?
+    private var selectedCategory: String
     private var selectedSchedule: String?
     private var schedule:[Days] = []
     var editedTracker: Tracker
@@ -34,9 +34,10 @@ final class EditTrackerViewController: UIViewController {
     var trackerType: String = ""
     var trackerIsPinned: Bool?
     
-    init(editedTracker: Tracker, editedCategory: String) {
+    init(editedTracker: Tracker, editedCategory: String, selectedCategory: String) {
         self.editedTracker = editedTracker
         self.editedCategory = editedCategory
+        self.selectedCategory = editedCategory
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -165,7 +166,6 @@ final class EditTrackerViewController: UIViewController {
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(habitTrackerDismissButtonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         return button
     }()
     
@@ -192,17 +192,7 @@ final class EditTrackerViewController: UIViewController {
         view.accessibilityIdentifier = "EditHabitVC"
         view.backgroundColor = .ypWhite
         
-        if let emojiIndex = trackerEmoji.trackerEmoji.firstIndex(of: editedTracker.trackerEmoji) {
-            let existEmojiIndex = IndexPath(row: emojiIndex, section: 0)
-            collectionView(habbitCollectionView, didSelectItemAt: existEmojiIndex)
-        }
-        
-      
-        if let colorIndex = trackerColors.trackerBackgroundColors.firstIndex(where: { UIColor.uiColorsEqual(color1: $0, color2: editedTracker.trackerColor) }) {
-            let existColorIndex = IndexPath(item: colorIndex, section: 1)
-            collectionView(habbitCollectionView, didSelectItemAt: existColorIndex)
-        }
-        
+        selectedEmojiColor()
         createView()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(keyboardSwitchOff))
@@ -214,6 +204,22 @@ final class EditTrackerViewController: UIViewController {
         blockButtons()
     }
 
+    private func selectedEmojiColor() {
+        if let emojiIndex = trackerEmoji.trackerEmoji.firstIndex(of: editedTracker.trackerEmoji) {
+            let existEmojiIndex = IndexPath(row: emojiIndex, section: 0)
+            collectionView(habbitCollectionView, didSelectItemAt: existEmojiIndex)
+        }
+        
+        if let colorIndex = trackerColors.trackerBackgroundColors.firstIndex(where: { UIColor.uiColorsEqual(color1: $0, color2: editedTracker.trackerColor) }) {
+            let existColorIndex = IndexPath(item: colorIndex, section: 1)
+            collectionView(habbitCollectionView, didSelectItemAt: existColorIndex)
+        }
+        
+        schedule = editedTracker.trackerShedule
+        selectedSchedule = shortDaysText(days: schedule)
+        selectedCategory = editedCategory
+    }
+    
     /// Метод создания UI
     private func createView() {
         let habbitButtonsStack = UIStackView(arrangedSubviews: [habbitTrackerDismiss, habbitTrackerCreate])
@@ -301,11 +307,11 @@ final class EditTrackerViewController: UIViewController {
         guard !name.isEmpty else { return }
         guard let color = selectedColor else { return }
         guard let emoji = selectedEmoji else { return }
-        guard let category = selectedCategory else { return }
+        let category = selectedCategory
 
-        if trackerType == "Event" {
-            eventDateSetup()
-        }
+//        if trackerType == "Event" {
+//            eventDateSetup()
+//        }
         
         let editedTracker = Tracker(id: editedTracker.id, trackerName: name, trackerColor: color, trackerEmoji: emoji, trackerShedule: schedule, trackerType: trackerType, pinned: trackerIsPinned ?? false)
         try? trackerStore.editTrackerInCoreData(tracker: editedTracker, categoryName: category)
@@ -332,14 +338,12 @@ final class EditTrackerViewController: UIViewController {
         guard let trackerName = habbitName.text else { return }
         
         if trackerType == "Habbit" && !trackerName.isEmpty  &&
-            selectedCategory != nil && selectedCategory != "" &&
             selectedSchedule != nil && selectedSchedule != "" &&
             selectedEmoji != "" && selectedColor != nil &&
             trackerName.count < 38 {
             habbitTrackerCreate.isEnabled = true
             habbitTrackerCreate.backgroundColor = .ypBlack
         } else if trackerType == "Event" && !trackerName.isEmpty &&
-                    selectedCategory != nil && selectedCategory != "" &&
                     selectedEmoji != "" && selectedColor != nil &&
                     trackerName.count < 38 {
             habbitTrackerCreate.isEnabled = true
@@ -399,7 +403,7 @@ extension EditTrackerViewController: UITableViewDataSource, UITableViewDelegate 
                 }
             }
         } else {
-            let trackerCategory = selectedCategory ?? ""
+            let trackerCategory = selectedCategory ?? editedCategory
             cell.textLabel?.text = localizedCategoryName
             cell.detailTextLabel?.text = trackerCategory
             cell.detailTextLabel?.textColor = .ypGray

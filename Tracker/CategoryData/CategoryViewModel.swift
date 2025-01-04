@@ -65,8 +65,4 @@ final class CategoryViewModel {
     func didSelectCategory(category: String) {
         selectedCategory = category
     } 
-    
-//    func getPinnedTrackers() -> [Tracker] {
-//        
-//    }
 }

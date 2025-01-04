@@ -139,7 +139,6 @@ final class HabitViewController: UIViewController {
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(habitTrackerDismissButtonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         return button
     }()
     
@@ -362,7 +361,6 @@ extension HabitViewController: UITableViewDataSource, UITableViewDelegate {
             cell.textLabel?.text = localizedCategoryName
             cell.detailTextLabel?.text = trackerCategory
             cell.detailTextLabel?.textColor = .ypGray
-            
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
             cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
@@ -457,7 +455,6 @@ extension HabitViewController: UICollectionViewDataSource {
         return habbitCell
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var id: String
         switch kind {
@@ -541,4 +538,3 @@ extension HabitViewController: CategoryViewControllerDelegate {
         habbitPropertiesTableView.reloadData()
     }
 }
-    

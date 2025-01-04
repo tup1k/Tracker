@@ -103,7 +103,6 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
         layout.minimumInteritemSpacing = 9
         layout.sectionInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-//        let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
         collectionView.register(TrackerCellViewController.self, forCellWithReuseIdentifier: "trackerCell")
         collectionView.register(TrackerCellSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -116,7 +115,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     var currentDate: Date? {
         let selectedDate = pickerDate.date
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
+        dateFormatter.dateFormat = "dd.MM.yyyy"
         dateFormatter.locale = Locale.current
         let formattedDate = dateFormatter.string(from: selectedDate)
         return dateFormatter.date(from: formattedDate) ?? Date()
@@ -314,7 +313,7 @@ final class TrackerViewController: UIViewController, UITextFieldDelegate, UISear
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты
+        dateFormatter.dateFormat = "dd.MM.yyyy"
         let formattedDate = dateFormatter.string(from: selectedDate)
         print("Выбранная дата: \(formattedDate)")
         currentCategoriesView()
@@ -471,7 +470,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     private func editTracker(indexPath: IndexPath) {
         let trackerToEdit = visibleCategories[indexPath.section].categoryTrackers[indexPath.item]
         let trackerCategoryToEdit = visibleCategories[indexPath.section].categoryName
-        let controller = EditTrackerViewController(editedTracker: trackerToEdit, editedCategory: trackerCategoryToEdit)
+        let controller = EditTrackerViewController(editedTracker: trackerToEdit, editedCategory: trackerCategoryToEdit, selectedCategory: trackerCategoryToEdit)
         controller.delegate = self
         controller.editedTracker = trackerToEdit
         print(visibleCategories[indexPath.section].categoryTrackers[indexPath.item].trackerColor)
@@ -513,9 +512,6 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackerViewController: TrackerCellDelegate {
     func completeTracker(_ trackerCell: TrackerCellViewController, id: UUID, trackerDone: Bool) {
-        let calendar = Calendar.current
-        let selectedDate = calendar.startOfDay(for: pickerDate.date)
-        
         if trackerDone {
             completedTrackersID.insert(id)
             trackerRecordStore.saveRecordToCoreData(id: id, trackerDate: currentDate ?? Date())
@@ -598,6 +594,8 @@ extension TrackerViewController: UISearchControllerDelegate, UISearchResultsUpda
                     trackerCollectionView.isHidden = true
                     searchPlaceholderImage.isHidden = false
                     searchPlaceholderLabel.isHidden = false
+                    trackerPlaceholderImage.isHidden = true
+                    trackerPlaceholderLabel.isHidden = true
                 }
         } else {
             trackerCollectionView.isHidden = false

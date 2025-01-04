@@ -132,7 +132,6 @@ final class TrackerCellViewController: UICollectionViewCell {
         }
         
         let completedCountCoreData = trackerRecordStore.countCoreDataRecordComplete(id: id)
-//        daysCountLable.text = daysText(for: completedCountCoreData)
         daysCountLable.text =  String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "") , completedCountCoreData)
         AnalyticsService.trackIsDoneReport()
     }
@@ -145,8 +144,6 @@ final class TrackerCellViewController: UICollectionViewCell {
         checkTrackerButton.backgroundColor = tracker.trackerColor
         trackerID = tracker.id
         let completedCountCoreData = trackerRecordStore.countCoreDataRecordComplete(id: tracker.id)
-//        daysCountLable.text = daysText(for: completedCountCoreData)
-       
         daysCountLable.text =  String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "") , completedCountCoreData)
         let imageName = trackerDone ? "checkmark" : "plus"
         checkTrackerButton.setImage(UIImage(systemName: imageName), for: .normal)
