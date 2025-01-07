@@ -13,15 +13,15 @@ protocol CategoryViewControllerDelegate: AnyObject {
 
 final class CategoryViewController: UIViewController {
     weak var delegate: CategoryViewControllerDelegate?
-
     private let categoryVC = TrackerViewController()
-    private let viewModel = CategoryViewModel()
+    private var viewModel = CategoryViewModel()
     private let trackerCategoryStore = TrackerCategoryStore.shared
+    var editedCategories: String = ""
     
-    /// Заголовок
     private lazy var categoryTitle: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        let localizedCategoryTitle = NSLocalizedString("categoryName", comment: "")
+        label.text = localizedCategoryTitle
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -54,7 +54,8 @@ final class CategoryViewController: UIViewController {
     /// Текст для заглушки
     private lazy var categoryPlaceholderLabel: UILabel = {
         let label = UILabel()
-        label.text = "Привычки и события можно \nобъединить по смыслу"
+        let localizedCategoryPlaceholderTitle = NSLocalizedString("categoryPlaceholder", comment: "")
+        label.text = localizedCategoryPlaceholderTitle
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlack
         label.textAlignment = .center
@@ -66,7 +67,8 @@ final class CategoryViewController: UIViewController {
     /// Кнопка создания категории
     private lazy var createCategoryButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Добавить категорию", for: .normal)
+        let localizedAddCategoryButton = NSLocalizedString("addCategoryButton", comment: "")
+        button.setTitle(localizedAddCategoryButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
@@ -75,6 +77,15 @@ final class CategoryViewController: UIViewController {
         button.addTarget(self, action: #selector(categoryButtonPressed), for: .touchUpInside)
         return button
     }()
+    
+//    init(viewModel: CategoryViewModel) {
+//        self.viewModel = viewModel
+//        super.init(nibName: nil, bundle: nil)
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -87,7 +98,6 @@ final class CategoryViewController: UIViewController {
             binding()
             viewModel.loadCategoriesFromCoreData()
             createView()
-           
         }
     
     // Создание UI
@@ -173,7 +183,11 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
         cell.backgroundColor = .ypAppBackground
         cell.selectionStyle = .none
         cell.accessoryType = (viewModel.isSelectedCategory(category: category)) ? .checkmark : .none
-        
+        if category == editedCategories {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         return cell
     }
     
@@ -182,20 +196,25 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectCategory(category: viewModel.actualCategories[indexPath.row])
+       let category = viewModel.actualCategories[indexPath.row]
+        editedCategories = category
+            viewModel.didSelectCategory(category: category)
     }
  
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let localizedContextEditButton = NSLocalizedString("contextMenuEdit", comment: "")
+        let localizedContextDeleteButton = NSLocalizedString("contextMenuDelete", comment: "")
+        
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { action in
             let editAction =
-                UIAction(title: NSLocalizedString("Редактировать", comment: ""),
+                UIAction(title:localizedContextEditButton,
                          image: UIImage(systemName: "pencil")) { action in
                     self.editCategoryName(indexPath: indexPath)
                 }
            
             let deleteAction =
-                UIAction(title: NSLocalizedString("Удалить", comment: ""),
+                UIAction(title: localizedContextDeleteButton,
                          image: UIImage(systemName: "trash"),
                          attributes: .destructive) { action in
                     self.deleteCategory(indexPath: indexPath)
@@ -203,8 +222,7 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
             return UIMenu(title: "", children: [editAction, deleteAction])
         })
     }
-    
-    
+
     private func editCategoryName(indexPath: IndexPath) {
         let controller = EditCategoryViewController()
         let category = viewModel.actualCategories[indexPath.row]
@@ -217,8 +235,12 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
     private func deleteCategory(indexPath: IndexPath) {
         let category = self.viewModel.actualCategories[indexPath.row]
         
-        let alert = UIAlertController(title: "Эта категория точне не нужна?", message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Удалить",
+        let localizedContextDeleteQuestion = NSLocalizedString("contextDeleteQuestion", comment: "")
+        let localizedContextDeleteButton = NSLocalizedString("contextMenuDelete", comment: "")
+        let localizedContextCancelButton = NSLocalizedString("cancelButton", comment: "")
+        
+        let alert = UIAlertController(title: localizedContextDeleteQuestion, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: localizedContextDeleteButton,
                                       style: .destructive,
                                       handler: { [weak self] _ in
             
@@ -226,7 +248,7 @@ extension CategoryViewController: UITableViewDataSource, UITableViewDelegate {
             self.viewModel.deleteCategory(category)
             
         }))
-        alert.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: localizedContextCancelButton, style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
 }

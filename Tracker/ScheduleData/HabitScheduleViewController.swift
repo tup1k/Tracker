@@ -13,12 +13,13 @@ protocol ScheduleViewControllerDelegate: AnyObject {
 
 final class HabitScheduleViewController: UIViewController {
     weak var delegate: ScheduleViewControllerDelegate?
-    private var selectedDays: [Days] = []
+    var selectedDays: [Days] = []
     
     /// Заголовок расписания
     private lazy var scheduleTitle: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
+        let localizedScheduleTitle = NSLocalizedString("scheduleTitle", comment: "")
+        label.text = localizedScheduleTitle
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -31,7 +32,7 @@ final class HabitScheduleViewController: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.separatorStyle = .singleLine
-        tableView.separatorColor = .ypLightGray
+        tableView.separatorColor = .ypBlack
         tableView.separatorInset.left = 16
         tableView.separatorInset.right = 16
         tableView.contentInset.top = -35
@@ -45,7 +46,8 @@ final class HabitScheduleViewController: UIViewController {
     /// Кнопка задания расписания для привычки
     private lazy var createScheduleButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Готово", for: .normal)
+        let localizedScheduleCreateButton = NSLocalizedString("scheduleCreate", comment: "")
+        button.setTitle(localizedScheduleCreateButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhite, for: .normal)
         button.backgroundColor = .ypBlack
@@ -118,16 +120,18 @@ extension HabitScheduleViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "scheduleCell", for: indexPath)
-        let weekDay = Days.allCases[indexPath.row]
-        cell.textLabel?.text = weekDay.rawValue
+        let weekDay = Days.allCases[indexPath.row].localizedName
+        cell.textLabel?.text = weekDay
         cell.backgroundColor = .ypLightGray
         cell.selectionStyle = .none
         
         let dayToggle = UISwitch()
         cell.accessoryView = dayToggle
+        
         dayToggle.onTintColor = .ypBlue
         dayToggle.addTarget(self, action: #selector(selectedDay), for: .valueChanged)
         dayToggle.tag = indexPath.row
+        dayToggle.isOn = selectedDays.contains(Days.allCases[indexPath.row])
         
         return cell
     }

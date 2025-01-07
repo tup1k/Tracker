@@ -21,7 +21,8 @@ final class OnboardingViewControllerOne: UIViewController {
     /// Заголовок окна создания привычки
     private lazy var onboardingTitle: UILabel = {
         let label = UILabel()
-        label.text = "Отслеживайте только \nто, что хотите"
+        let localizedOnboardingTitleOne = NSLocalizedString("onboardingTitleOne", comment: "")
+        label.text = localizedOnboardingTitleOne
         label.font = .systemFont(ofSize: 32, weight: .bold)
         label.textColor = .black
         label.textAlignment = .center
@@ -33,7 +34,8 @@ final class OnboardingViewControllerOne: UIViewController {
     /// Кнопка создания категории
     private lazy var onboardingButtonOne: UIButton = {
         let button = UIButton()
-        button.setTitle("Вот это технологии!", for: .normal)
+        let localizedOnboardingButton = NSLocalizedString("onboardingButton", comment: "")
+        button.setTitle(localizedOnboardingButton, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .black

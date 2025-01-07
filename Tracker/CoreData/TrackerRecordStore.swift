@@ -83,5 +83,36 @@ final class TrackerRecordStore: NSObject {
             return false
         }
     }
+    
+    func allCompletedTrackersCount() -> Int {
+        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        
+        do {
+            let allTrackerRecords = try context.fetch(fetchRequest)
+            return allTrackerRecords.count
+        } catch {
+            print("ОШИБКА ПОДСЧЕТА КОЛИЧЕСТВА ВЫПОЛНЕННЫХ ТРЕКЕРОВ: \(error.localizedDescription)")
+            return 0
+        }
+    }
+    
+    
+    /// Функция удаления записи о выполнении трекера из CoreData
+    func deleteRecordFromCoreDataForStatistic(id: UUID) {
+        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+       
+        do {
+            let trackerRecord = try context.fetch(fetchRequest)
+            for record in trackerRecord {
+                context.delete(record)
+            }
+            try context.save()
+            print("ЗАПИСЬ О ВЫПОЛНЕНИИ ТРЕКЕРА \(id) УСПЕШНО УДАЛЕНА ИЗ CORE DATA.")
+        } catch {
+            print("ОШИБКА УДАЛЕНИЯ ЗАПИСИ О ВЫПОЛНЕНИИ ТРЕКЕРА \(id) ИЗ CORE DATA: \(error.localizedDescription)")
+        }
+    }
 }
 

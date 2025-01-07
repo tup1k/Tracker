@@ -15,14 +15,16 @@ class Tracker {
     let trackerEmoji: String
     let trackerShedule: [Days]
     let trackerType: String
+    var pinned: Bool = false
     
-    init(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days], trackerType: String) {
+    init(id: UUID, trackerName: String, trackerColor: UIColor, trackerEmoji: String, trackerShedule: [Days], trackerType: String, pinned: Bool) {
         self.id = id
         self.trackerName = trackerName
         self.trackerColor = trackerColor
         self.trackerEmoji = trackerEmoji
         self.trackerShedule = trackerShedule
         self.trackerType = trackerType
+        self.pinned = pinned
     }
     
     convenience init(from trackersFromCoreData: TrackerCoreData) {
@@ -36,7 +38,8 @@ class Tracker {
             trackerColor: trackerUIColor,
             trackerEmoji: trackersFromCoreData.trackerEmoji ?? "",
             trackerShedule: trackerCoreDataSchedule,
-            trackerType: trackersFromCoreData.trackerType ?? ""
+            trackerType: trackersFromCoreData.trackerType ?? "",
+            pinned: trackersFromCoreData.pinned
         )
     }
 }
@@ -53,27 +56,34 @@ struct TrackerRecord {
     let trackerDate: Date
 }
 
+/// Дни для расписания трекера
+import Foundation
 
 /// Дни для расписания трекера
 enum Days: String, CaseIterable {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case sutarday = "Суббота"
-    case sunday = "Воскресение"
+    case monday = "monday"
+    case tuesday = "tuesday"
+    case wednesday = "wednesday"
+    case thursday = "thursday"
+    case friday = "friday"
+    case saturday = "saturday"
+    case sunday = "sunday"
     
+    // Локализованное полное название дня недели
+    var localizedName: String {
+        return NSLocalizedString(self.rawValue, comment: "")
+    }
+    
+    // Локализованное сокращенное название дня недели
     var shortDay: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .sutarday: return "Сб"
-        case .sunday: return "Вс"
+        case .monday: return NSLocalizedString("mon", comment: "")
+        case .tuesday: return NSLocalizedString("tue", comment: "")
+        case .wednesday: return NSLocalizedString("wed", comment: "")
+        case .thursday: return NSLocalizedString("thu", comment: "")
+        case .friday: return NSLocalizedString("fri", comment: "")
+        case .saturday: return NSLocalizedString("sat", comment: "")
+        case .sunday: return NSLocalizedString("sun", comment: "")
         }
     }
 }
-

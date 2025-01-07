@@ -63,6 +63,7 @@ final class TrackerCellViewController: UICollectionViewCell {
     var trackerDone: Bool = false
     private var trackerID: UUID?
     var currentDate: Date
+    var trackerIsPinned: Bool?
     
     let trackerRecordStore = TrackerRecordStore.shared
     
@@ -131,10 +132,11 @@ final class TrackerCellViewController: UICollectionViewCell {
         }
         
         let completedCountCoreData = trackerRecordStore.countCoreDataRecordComplete(id: id)
-        daysCountLable.text = daysText(for: completedCountCoreData)
+        daysCountLable.text =  String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "") , completedCountCoreData)
+        AnalyticsService.trackIsDoneReport()
     }
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, isPinned: Bool) {
         trackerDone = isCompletedToday
         emojiLable.text = tracker.trackerEmoji
         titleLable.text = tracker.trackerName
@@ -142,10 +144,11 @@ final class TrackerCellViewController: UICollectionViewCell {
         checkTrackerButton.backgroundColor = tracker.trackerColor
         trackerID = tracker.id
         let completedCountCoreData = trackerRecordStore.countCoreDataRecordComplete(id: tracker.id)
-        daysCountLable.text = daysText(for: completedCountCoreData)
+        daysCountLable.text =  String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "") , completedCountCoreData)
         let imageName = trackerDone ? "checkmark" : "plus"
         checkTrackerButton.setImage(UIImage(systemName: imageName), for: .normal)
         checkTrackerButton.alpha = trackerDone ? 0.3 : 1.0
+        trackerIsPinned = isPinned
         }
     
     private func daysText(for count: Int) -> String {
@@ -162,6 +165,12 @@ final class TrackerCellViewController: UICollectionViewCell {
                 return "\(count) дней"
             }
         }
+    
+    private func daysTextLocalized(for count: Int) -> String {
+        let formatString: String = NSLocalizedString("days", comment: "")
+            let resultString: String = String.localizedStringWithFormat(formatString, count) // передаем count
+            return resultString // возвращаем нужный текст
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
