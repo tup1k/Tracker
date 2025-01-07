@@ -31,6 +31,7 @@ final class TabBarController: UITabBarController {
         self.viewControllers = [trackerViewController, statisticViewController]
         
         let lineLayer = CALayer()
+        lineLayer.borderColor = UIColor.ypTBGray.cgColor
         lineLayer.backgroundColor = UIColor.ypTBGray.cgColor
         lineLayer.frame = CGRect(x: 0, y: 0, width: self.tabBar.bounds.width, height: 1)
         self.tabBar.layer.addSublayer(lineLayer)
@@ -38,6 +39,5 @@ final class TabBarController: UITabBarController {
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         guard let tabBarTitle = viewController.tabBarItem.title else {return}
-        print("Выбрана страница \(tabBarTitle)")
     }
 }

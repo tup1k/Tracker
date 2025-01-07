@@ -29,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       
     }
     
+    func applicationWillTerminate(_ application: UIApplication) {
+        AnalyticsService.closeScreenReport(screen: .main)
+    }
+    
     // MARK: - Core Data stack
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "TrackerCoreData")

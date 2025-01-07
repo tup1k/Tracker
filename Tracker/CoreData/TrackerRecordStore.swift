@@ -95,5 +95,24 @@ final class TrackerRecordStore: NSObject {
             return 0
         }
     }
+    
+    
+    /// Функция удаления записи о выполнении трекера из CoreData
+    func deleteRecordFromCoreDataForStatistic(id: UUID) {
+        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+       
+        do {
+            let trackerRecord = try context.fetch(fetchRequest)
+            for record in trackerRecord {
+                context.delete(record)
+            }
+            try context.save()
+            print("ЗАПИСЬ О ВЫПОЛНЕНИИ ТРЕКЕРА \(id) УСПЕШНО УДАЛЕНА ИЗ CORE DATA.")
+        } catch {
+            print("ОШИБКА УДАЛЕНИЯ ЗАПИСИ О ВЫПОЛНЕНИИ ТРЕКЕРА \(id) ИЗ CORE DATA: \(error.localizedDescription)")
+        }
+    }
 }
 

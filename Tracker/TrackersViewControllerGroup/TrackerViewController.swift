@@ -401,14 +401,17 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        
-        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
-                                                         height: UIView.layoutFittingExpandedSize.height),
-                                                  withHorizontalFittingPriority: .required,
-                                                  verticalFittingPriority: .fittingSizeLevel)
+        let headerHeight: CGFloat = calculateHeaderHeightForSection(collectionView, section)
+        return CGSize(width: collectionView.frame.width, height: headerHeight)
+    }
+    
+    /// Метод динамического учета высоты хэдера (вводится ввиду ограничений XCode 18)
+    private func calculateHeaderHeightForSection(_ collectionView: UICollectionView,_ section: Int) -> CGFloat {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 19) // Example font size
+        let labelSize = label.sizeThatFits(CGSize(width: collectionView.bounds.width - 12, height: CGFloat.greatestFiniteMagnitude))
+        let calculatedHeight = labelSize.height + 12 + 12 // Adjust as needed based on padding and other factors
+        return calculatedHeight
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -497,6 +500,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
             guard let self else { return }
             self.visibleCategories.removeAll{$0.categoryTrackers.contains(where: {$0.id == trackerID})}
             try? self.trackerStore.deleteTrackerFromCoreData(trackerID: trackerID)
+            trackerRecordStore.deleteRecordFromCoreDataForStatistic(id: trackerID)
             
             self.categories = (try? self.trackerCategoryStore.importCategoryWithTrackersFromCoreData()) ?? []
             self.currentCategoriesView()
